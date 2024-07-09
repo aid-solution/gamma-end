@@ -9,7 +9,7 @@ import {
   Post,
   UsePipes,
 } from '@nestjs/common';
-import { GrilleService } from './Grille.service';
+import { GrilleService } from './grille.service';
 import { CreateGrilleDTO } from 'src/dto/createGrille.dto';
 import { GrilleDTO } from 'src/dto/grille.dto';
 import { ConvertToOriginalTypePipe } from 'src/pipes/convertToOriginalType.pipe';

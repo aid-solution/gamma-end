@@ -7,13 +7,13 @@ import { getTenantName } from 'src/utilities/getTenantName';
 import {
   FonctionDocument,
   FonctionSchema,
-} from 'src/schemas/users/Fonction.schema';
+} from 'src/schemas/users/fonction.schema';
 import { FonctionDTO } from 'src/dto/fonction.dto';
 import { CreateFonctionRubriqueDTO } from 'src/dto/createFonctionRubrique.dto';
 import { UpdateAffectationRubriqueDTO } from 'src/dto/updateAffectationRubrique.dto';
 import { AffectationRubriqueDTO } from 'src/dto/affectationRubrique.dto';
 import { FonctionRubriqueService } from 'src/fonction-rubrique/fonction-rubrique.service';
-import { FonctionRubrique } from 'src/schemas/users/FonctionRubrique.schema';
+import { FonctionRubrique } from 'src/schemas/users/fonctionRubrique.schema';
 import { CreateFonctionDTO } from 'src/dto/createFonction.dto';
 import {
   DirectionDocument,
