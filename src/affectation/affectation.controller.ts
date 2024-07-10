@@ -14,7 +14,7 @@ export class AffectationController {
 
   @Post()
   @HttpCode(201)
-  async createAgent(@Body() affectationDTO: CreateAffectationDTO) {
+  async create(@Body() affectationDTO: CreateAffectationDTO) {
     try {
       return await this.affectationService.create(affectationDTO);
     } catch (error) {

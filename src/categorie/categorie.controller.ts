@@ -19,9 +19,9 @@ export class CategorieController {
 
   @Post()
   @HttpCode(201)
-  async createEchellon(@Body() EchellonDto: EchellonDTO) {
+  async createEchellon(@Body() echellonDto: EchellonDTO) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { _id, ...echellon } = EchellonDto;
+    const { _id, ...echellon } = echellonDto;
     try {
       return await this.categorieService.create(echellon);
     } catch (error) {
@@ -30,7 +30,7 @@ export class CategorieController {
   }
 
   @Get()
-  async Echellons() {
+  async FindAll() {
     try {
       return await this.categorieService.findAll();
     } catch (error) {
@@ -48,8 +48,8 @@ export class CategorieController {
   }
 
   @Patch()
-  async updateEchellon(@Body() EchellonDto: EchellonDTO) {
-    const { _id, ...echellon } = EchellonDto;
+  async updateEchellon(@Body() echellonDto: EchellonDTO) {
+    const { _id, ...echellon } = echellonDto;
     try {
       return await this.categorieService.update(_id, echellon);
     } catch (error) {

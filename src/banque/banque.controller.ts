@@ -9,7 +9,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { BanqueService } from './banque.service';
-import { BanqueDTO } from 'src/dto/Banque.dto';
+import { BanqueDTO } from 'src/dto/banque.dto';
 import { CreateBanqueDTO } from 'src/dto/createBanque.dto';
 
 @Controller('banque')
@@ -18,9 +18,9 @@ export class BanqueController {
 
   @Post()
   @HttpCode(201)
-  async createBanque(@Body() BanqueDto: BanqueDTO) {
+  async create(@Body() banqueDto: BanqueDTO) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { _id, ...banque } = BanqueDto;
+    const { _id, ...banque } = banqueDto;
     const createBanqueDto = banque as unknown as CreateBanqueDTO;
     try {
       return await this.banqueService.create(createBanqueDto);
@@ -30,7 +30,7 @@ export class BanqueController {
   }
 
   @Get()
-  async banques() {
+  async findAll() {
     try {
       return await this.banqueService.findAll();
     } catch (error) {
@@ -48,8 +48,8 @@ export class BanqueController {
   }
 
   @Patch()
-  async updateBanque(@Body() BanqueDto: BanqueDTO) {
-    const { _id, ...banque } = BanqueDto;
+  async updateBanque(@Body() banqueDto: BanqueDTO) {
+    const { _id, ...banque } = banqueDto;
     const createBanqueDto = banque as unknown as CreateBanqueDTO;
     try {
       return await this.banqueService.update(_id, createBanqueDto);

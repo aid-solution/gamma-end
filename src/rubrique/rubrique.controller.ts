@@ -21,7 +21,7 @@ export class RubriqueController {
   @Post()
   @HttpCode(201)
   @UsePipes(ConvertToOriginalTypePipe)
-  async createRubrique(@Body() rubriqueDto: RubriqueDTO) {
+  async create(@Body() rubriqueDto: RubriqueDTO) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, ...rubrique } = rubriqueDto;
     const createRubriqueDto = rubrique as unknown as CreateRubriqueDTO;
@@ -33,7 +33,7 @@ export class RubriqueController {
   }
 
   @Get()
-  async rubriques() {
+  async findAll() {
     try {
       return await this.rubriqueService.findAll();
     } catch (error) {
@@ -52,7 +52,7 @@ export class RubriqueController {
 
   @Patch()
   @UsePipes(ConvertToOriginalTypePipe)
-  async updateRubrique(@Body() rubriqueDto: RubriqueDTO) {
+  async update(@Body() rubriqueDto: RubriqueDTO) {
     const { _id, ...rubrique } = rubriqueDto;
     const createRubriqueDto = rubrique as unknown as CreateRubriqueDTO;
     try {

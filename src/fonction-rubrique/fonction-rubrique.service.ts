@@ -7,7 +7,7 @@ import { getTenantName } from 'src/utilities/getTenantName';
 import {
   FonctionRubriqueDocument,
   FonctionRubriqueSchema,
-} from 'src/schemas/users/FonctionRubrique.schema';
+} from 'src/schemas/users/fonctionRubrique.schema';
 import { CreateFonctionRubriqueDTO } from 'src/dto/createFonctionRubrique.dto';
 import { BulkWriteResult } from 'mongodb';
 import {
@@ -65,12 +65,12 @@ export class FonctionRubriqueService {
   }
 
   async findAllByFonctionAndRubriqueOnGoing(
-    Fonction: string,
+    fonction: string,
   ): Promise<FonctionRubriqueDocument[]> {
     return await (
       await this.FonctionRubriqueFonctionModel
     )
-      .find({ Fonction: Fonction, dateFin: { $exists: false } })
+      .find({ fonction: fonction, dateFin: { $exists: false } })
       .populate({ path: 'rubrique', model: await this.rubriqueModel })
       .exec();
   }

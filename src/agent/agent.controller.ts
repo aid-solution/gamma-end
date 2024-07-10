@@ -16,7 +16,7 @@ export class AgentController {
   constructor(private readonly agentService: AgentService) {}
   @Post()
   @HttpCode(201)
-  async createAgent(@Body() agentDto: AgentDTO) {
+  async create(@Body() agentDto: AgentDTO) {
     try {
       return await this.agentService.create(agentDto);
     } catch (error) {
@@ -26,7 +26,7 @@ export class AgentController {
 
   @Patch()
   @UsePipes(ConvertToOriginalTypePipe)
-  async updateAgent(@Body() agentDto: AgentDTO) {
+  async update(@Body() agentDto: AgentDTO) {
     try {
       return await this.agentService.update('id', agentDto);
     } catch (error) {

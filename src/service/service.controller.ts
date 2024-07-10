@@ -17,9 +17,9 @@ export class ServiceController {
 
   @Post()
   @HttpCode(201)
-  async createService(@Body() ServiceDto: ServiceDTO) {
+  async create(@Body() serviceDto: ServiceDTO) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { _id, ...service } = ServiceDto;
+    const { _id, ...service } = serviceDto;
     try {
       return await this.serviceService.create(service as ServiceDTO);
     } catch (error) {
@@ -29,7 +29,7 @@ export class ServiceController {
   }
 
   @Get()
-  async Services() {
+  async findAll() {
     try {
       return await this.serviceService.findAll();
     } catch (error) {

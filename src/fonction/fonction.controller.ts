@@ -9,7 +9,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { FonctionService } from './fonction.service';
-import { FonctionDTO } from 'src/dto/Fonction.dto';
+import { FonctionDTO } from 'src/dto/fonction.dto';
 
 @Controller('Fonction')
 export class FonctionController {
@@ -17,7 +17,7 @@ export class FonctionController {
 
   @Post()
   @HttpCode(201)
-  async createFonction(@Body() fonctionDto: FonctionDTO) {
+  async create(@Body() fonctionDto: FonctionDTO) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, ...fonction } = fonctionDto;
     try {

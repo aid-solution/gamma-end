@@ -8,7 +8,7 @@ import { getTenantName } from 'src/utilities/getTenantName';
 import {
   AffectationDocument,
   AffectationSchema,
-} from 'src/schemas/users/Affectation.schema';
+} from 'src/schemas/users/affectation.schema';
 import { CreateAffectationDTO } from 'src/dto/createAffectation.dto';
 
 @Injectable()

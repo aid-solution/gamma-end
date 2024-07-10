@@ -17,7 +17,7 @@ export class DirectionController {
 
   @Post()
   @HttpCode(201)
-  async createDirection(@Body() directionDto: DirectionDTO) {
+  async create(@Body() directionDto: DirectionDTO) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, ...direction } = directionDto;
     try {
@@ -47,9 +47,9 @@ export class DirectionController {
   }
 
   @Patch()
-  async updateDirection(@Body() DirectionDto: DirectionDTO) {
-    const { _id, ...Direction } = DirectionDto;
-    const createDirectionDto = Direction as unknown as DirectionDTO;
+  async update(@Body() directionDto: DirectionDTO) {
+    const { _id, ...direction } = directionDto;
+    const createDirectionDto = direction as unknown as DirectionDTO;
     try {
       return await this.directionService.update(_id, createDirectionDto);
     } catch (error) {

@@ -17,9 +17,9 @@ export class EchellonController {
 
   @Post()
   @HttpCode(201)
-  async createEchellon(@Body() EchellonDto: EchellonDTO) {
+  async create(@Body() echellonDto: EchellonDTO) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { _id, ...echellon } = EchellonDto;
+    const { _id, ...echellon } = echellonDto;
     try {
       return await this.echellonService.create(echellon);
     } catch (error) {
@@ -28,7 +28,7 @@ export class EchellonController {
   }
 
   @Get()
-  async Echellons() {
+  async FindAll() {
     try {
       return await this.echellonService.findAll();
     } catch (error) {
@@ -46,8 +46,8 @@ export class EchellonController {
   }
 
   @Patch()
-  async updateEchellon(@Body() EchellonDto: EchellonDTO) {
-    const { _id, ...echellon } = EchellonDto;
+  async updateEchellon(@Body() echellonDto: EchellonDTO) {
+    const { _id, ...echellon } = echellonDto;
     try {
       return await this.echellonService.update(_id, echellon);
     } catch (error) {

@@ -21,9 +21,9 @@ export class GrilleController {
   @Post()
   @HttpCode(201)
   @UsePipes(ConvertToOriginalTypePipe)
-  async createGrille(@Body() GrilleDto: GrilleDTO) {
+  async create(@Body() grilleDto: GrilleDTO) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { _id, ...grille } = GrilleDto;
+    const { _id, ...grille } = grilleDto;
     const createGrilleDto = grille as unknown as CreateGrilleDTO;
     try {
       return await this.grilleService.create(createGrilleDto);
@@ -33,7 +33,7 @@ export class GrilleController {
   }
 
   @Get()
-  async Grilles() {
+  async findAll() {
     try {
       return await this.grilleService.findAll();
     } catch (error) {
@@ -52,8 +52,8 @@ export class GrilleController {
 
   @Patch()
   @UsePipes(ConvertToOriginalTypePipe)
-  async updateGrille(@Body() GrilleDto: GrilleDTO) {
-    const { _id, ...grille } = GrilleDto;
+  async update(@Body() grilleDto: GrilleDTO) {
+    const { _id, ...grille } = grilleDto;
     const createGrilleDto = grille as unknown as CreateGrilleDTO;
     try {
       return await this.grilleService.update(_id, createGrilleDto);
