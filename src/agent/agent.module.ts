@@ -7,6 +7,9 @@ import { ManagerDbService } from 'src/providers/managerDb.service';
 import { TenantCachingService } from 'src/providers/tenantCaching.service';
 import { AffectationService } from 'src/affectation/affectation.service';
 import { ChargeService } from 'src/charge/charge.service';
+import { AgentAccountService } from 'src/agent-account/agent-account.service';
+import { AgentRubriqueService } from 'src/agent-rubrique/agent-rubrique.service';
+import { RubriqueService } from 'src/rubrique/rubrique.service';
 
 @Module({
   controllers: [AgentController],
@@ -18,6 +21,9 @@ import { ChargeService } from 'src/charge/charge.service';
     TenantCachingService,
     AffectationService,
     ChargeService,
+    AgentAccountService,
+    AgentRubriqueService,
+    RubriqueService,
   ],
 })
 export class AgentModule {}

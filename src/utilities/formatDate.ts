@@ -1,15 +1,14 @@
-export const formatDate = (originalDateString: string) => {
-  const dateObject = new Date(originalDateString);
-  const formattedDateString = `${
-    dateObject.getDate() < 10
-      ? `0${dateObject.getDate()}`
-      : dateObject.getDate()
-  }-${dateObject.getMonth() + 1}-${dateObject.getFullYear()}`;
-  return formattedDateString;
-};
-export const todayDate = (date: Date) => {
-  const day = String(date.getDate()).padStart(2, '0');
+export const formatDate = (date: Date, separte: string = '-') => {
+  const day = date.getDate().toString().padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const year = date.getFullYear();
-  return `${day}-${month}-${year}`;
+  return separte === '-'
+    ? `${day}-${month}-${year}`
+    : `${year}-${month}-${day}`;
+};
+
+export const differenceBetweenDates = (debut: Date, fin: Date) => {
+  const diffTime = Math.abs(debut.getTime() - fin.getTime());
+  const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  return days;
 };

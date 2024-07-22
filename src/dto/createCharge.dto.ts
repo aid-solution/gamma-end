@@ -37,13 +37,13 @@ export class CreateChargeDTO {
 
   @IsBoolean()
   @IsOptional()
-  handicap: string;
+  handicap: boolean;
 
   @IsBoolean()
   @IsOptional()
-  scolarite: string;
+  scolarite: boolean;
 
   @IsBoolean()
   @IsOptional()
-  asujetiCnss: string;
+  assujetiCNSS: boolean;
 }

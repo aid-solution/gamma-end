@@ -17,13 +17,36 @@ export class Tenant {
   nif: string;
 
   @Prop({
+    required: false,
+    trim: true,
+  })
+  rccmNumero: string;
+
+  @Prop({
+    required: true,
+    trim: true,
+  })
+  cotisationNumero: string;
+
+  @Prop({
+    required: true,
+    trim: true,
+  })
+  telephone: string;
+
+  @Prop({
     required: true,
     trim: true,
   })
   email: string;
 
   @Prop({
-    default: false,
+    required: false,
+  })
+  bp: string;
+
+  @Prop({
+    default: true,
   })
   isValidate: boolean;
 

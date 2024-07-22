@@ -1,6 +1,20 @@
-import { IsEnum, IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import {
+  IsEnum,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { Types } from 'mongoose';
 
-export class ChargeDTO {
+export class UpdateChargeDTO {
+  @IsMongoId()
+  _id: Types.ObjectId;
+
+  @IsNotEmpty()
+  @IsMongoId()
+  agent: Types.ObjectId;
+
   @IsString()
   @IsNotEmpty()
   @IsEnum(['Enfant', 'Conjoint(e)'])
@@ -33,5 +47,5 @@ export class ChargeDTO {
 
   @IsString()
   @IsOptional()
-  assujetiCNSS: string;
+  asujetiCNSS: string;
 }

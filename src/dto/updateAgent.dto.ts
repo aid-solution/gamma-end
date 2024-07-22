@@ -8,9 +8,9 @@ import {
 import { Type } from 'class-transformer';
 import { AffectationDTO } from './affectation.dto';
 import { ChargeDTO } from './charge.dto';
-import { AgentAccountDTO } from './agentAccount.dto';
+import { UpdateAgentAccountDTO } from './updateAgentAccount.dto';
 
-export class AgentDTO {
+export class UpdateAgentDTO {
   @IsOptional()
   @IsString()
   _id: string;
@@ -93,8 +93,8 @@ export class AgentDTO {
   modePaiement: string;
 
   @ValidateNested({ each: true })
-  @Type(() => AgentAccountDTO)
-  agentAccount: AgentAccountDTO;
+  @Type(() => UpdateAgentAccountDTO)
+  agentAccount: UpdateAgentAccountDTO;
 
   @ValidateNested({ each: true })
   @Type(() => ChargeDTO)

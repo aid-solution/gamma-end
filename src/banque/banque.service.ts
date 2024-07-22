@@ -34,6 +34,7 @@ export class BanqueService {
   async findOne(id: string): Promise<BanqueDocument> {
     return await (await this.banqueModel).findById(id).exec();
   }
+
   async update(
     id: string,
     updateBanqueDto: CreateBanqueDTO,

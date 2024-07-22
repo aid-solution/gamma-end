@@ -41,17 +41,17 @@ export class Charge {
   @Prop({
     required: false,
   })
-  handicap: string;
+  handicap: boolean;
 
   @Prop({
     required: false,
   })
-  scolarite: string;
+  scolarite: boolean;
 
   @Prop({
     required: false,
   })
-  asujetiCnss: string;
+  assujetiCNSS: boolean;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

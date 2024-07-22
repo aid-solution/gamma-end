@@ -33,7 +33,7 @@ export class CreateAffectationDTO {
   @IsNotEmpty()
   grille: string;
 
-  @IsString()
   @IsNotEmpty()
-  salaire: string;
+  @IsMongoId()
+  agentRubrique: Types.ObjectId;
 }

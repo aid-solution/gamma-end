@@ -5,15 +5,19 @@ import { UseModel } from '../providers/useModel.service';
 import { ConnectionResolver } from '../providers/connectionResolver.service';
 import { ManagerDbService } from 'src/providers/managerDb.service';
 import { TenantCachingService } from 'src/providers/tenantCaching.service';
+import { AgentRubriqueService } from 'src/agent-rubrique/agent-rubrique.service';
+import { RubriqueService } from 'src/rubrique/rubrique.service';
 
 @Module({
   controllers: [AffectationController],
   providers: [
-    UseModel,
     AffectationService,
+    UseModel,
     ConnectionResolver,
     ManagerDbService,
     TenantCachingService,
+    AgentRubriqueService,
+    RubriqueService,
   ],
   exports: [AffectationService],
 })

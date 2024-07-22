@@ -12,7 +12,7 @@ export class AgentAccount {
     required: true,
     trim: true,
   })
-  numero: number;
+  compte: number;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

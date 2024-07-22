@@ -1,13 +1,21 @@
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class AffectationDTO {
+export class UpdateAffectationDTO {
   @IsString()
   @IsOptional()
+  _id: string;
+
+  @IsString()
+  @IsNotEmpty()
+  agent: string;
+
+  @IsString()
+  @IsNotEmpty()
   @IsEnum(['Avancement', 'Promotion', 'Cessation', 'Retraite', 'Recruitement'])
   statut: string;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   dateDebut: string;
 
   @IsString()
@@ -23,6 +31,6 @@ export class AffectationDTO {
   grille: string;
 
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   salaire: string;
 }

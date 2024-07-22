@@ -11,7 +11,7 @@ import {
 import { FonctionService } from './fonction.service';
 import { FonctionDTO } from 'src/dto/fonction.dto';
 
-@Controller('Fonction')
+@Controller('fonction')
 export class FonctionController {
   constructor(private readonly fonctionService: FonctionService) {}
 

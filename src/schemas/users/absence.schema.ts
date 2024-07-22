@@ -22,7 +22,7 @@ export class Absence {
   @Prop({
     required: true,
   })
-  dateFin: number;
+  dateFin: Date;
 
   @Prop({
     required: true,

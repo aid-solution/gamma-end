@@ -43,14 +43,16 @@ export class Affectation {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Grille',
+    required: true,
   })
   grille: Grille;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
+    required: true,
     ref: 'AgentRubrique',
   })
-  Agentrubrique: AgentRubrique;
+  agentRubrique: AgentRubrique;
 }
 
 export const AffectationSchema = SchemaFactory.createForClass(Affectation);

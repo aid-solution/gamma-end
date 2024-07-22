@@ -7,6 +7,8 @@ import { ManagerDbService } from 'src/providers/managerDb.service';
 import { getTenantName } from 'src/utilities/getTenantName';
 import { ChargeDocument, ChargeSchema } from 'src/schemas/users/charge.schema';
 import { CreateChargeDTO } from 'src/dto/createCharge.dto';
+import { BulkWriteResult } from 'mongodb';
+import { UpdateChargeDTO } from 'src/dto/updateCharge.dto';
 
 @Injectable()
 export class ChargeService {
@@ -37,6 +39,10 @@ export class ChargeService {
     return await (await this.chargeModel).find({}).exec();
   }
 
+  async findByAgent(agent: string): Promise<ChargeDocument[]> {
+    return await (await this.chargeModel).find({ agent }).exec();
+  }
+
   async findOne(id: string): Promise<ChargeDocument> {
     return await (await this.chargeModel).findById(id).exec();
   }
@@ -48,5 +54,19 @@ export class ChargeService {
     return await (await this.chargeModel)
       .findByIdAndUpdate(id, updateCreateDto, { new: true })
       .exec();
+  }
+
+  async updateByAgent(
+    updateChargeDto: UpdateChargeDTO[],
+  ): Promise<BulkWriteResult> {
+    const bulkOps = updateChargeDto.map((dto) => ({
+      updateMany: {
+        filter: { _id: dto._id },
+        update: { $set: dto },
+      },
+    }));
+
+    const result = await (await this.chargeModel).bulkWrite(bulkOps);
+    return result;
   }
 }

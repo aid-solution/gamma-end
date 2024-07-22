@@ -25,6 +25,11 @@ import { BanqueModule } from './banque/banque.module';
 import { DirectionRubriqueModule } from './direction-rubrique/direction-rubrique.module';
 import { ServiceRubriqueModule } from './service-rubrique/service-rubrique.module';
 import { FonctionRubriqueModule } from './fonction-rubrique/fonction-rubrique.module';
+import { TenantModule } from './tenant/tenant.module';
+import { AgentAccountModule } from './agent-account/agent-account.module';
+import { AgentRubriqueModule } from './agent-rubrique/agent-rubrique.module';
+import { AbsenceModule } from './absence/absence.module';
+import { CongeModule } from './conge/conge.module';
 
 @Module({
   imports: [
@@ -48,6 +53,11 @@ import { FonctionRubriqueModule } from './fonction-rubrique/fonction-rubrique.mo
     DirectionRubriqueModule,
     ServiceRubriqueModule,
     FonctionRubriqueModule,
+    TenantModule,
+    AgentAccountModule,
+    AgentRubriqueModule,
+    AbsenceModule,
+    CongeModule,
   ],
   controllers: [AppController],
   providers: [

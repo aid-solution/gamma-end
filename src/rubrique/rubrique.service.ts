@@ -33,12 +33,41 @@ export class RubriqueService {
   }
 
   async findAll(): Promise<RubriqueDocument[]> {
-    return await (await this.rubriqueModel).find({}).exec();
+    return await (
+      await this.rubriqueModel
+    )
+      .find({
+        $and: [
+          { code: { $ne: 100 } },
+          { code: { $ne: 154 } },
+          { code: { $ne: 201 } },
+        ],
+      })
+      .exec();
+  }
+
+  async findAllInitialRubrique(): Promise<RubriqueDocument[]> {
+    return await (
+      await this.rubriqueModel
+    )
+      .find({
+        $and: [
+          { code: { $eq: 100 } },
+          { code: { $eq: 154 } },
+          { code: { $eq: 201 } },
+        ],
+      })
+      .exec();
   }
 
   async findOne(id: string): Promise<RubriqueDocument> {
     return await (await this.rubriqueModel).findById(id).exec();
   }
+
+  async findOneByCode(code: number): Promise<RubriqueDocument> {
+    return await (await this.rubriqueModel).findOne({ code }).exec();
+  }
+
   async update(
     id: string,
     updateRubriqueDto: CreateRubriqueDTO,
