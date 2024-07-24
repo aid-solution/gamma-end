@@ -33,6 +33,15 @@ export class AbsenceController {
     }
   }
 
+  @Get()
+  async findAll() {
+    try {
+      return await this.absenceService.findAll();
+    } catch (error) {
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {

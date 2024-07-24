@@ -29,6 +29,7 @@ import {
 } from 'src/schemas/users/agentRubrique.schema';
 import { formatDate } from 'src/utilities/formatDate';
 import { UpdateAffectationDTO } from 'src/dto/updateAffectation.dto';
+import { AgentDocument, AgentSchema } from 'src/schemas/users/agent.schema';
 
 @Injectable()
 export class AffectationService {
@@ -37,15 +38,23 @@ export class AffectationService {
     @Inject(REQUEST) private readonly request: Request,
     private managerDbService: ManagerDbService,
   ) {}
+
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
   );
+
   private readonly affectationModel =
     this.useModel.createModel<AffectationDocument>(
       this.tenantName,
       'Affectation',
       AffectationSchema,
     );
+
+  private readonly agentModel = this.useModel.createModel<AgentDocument>(
+    this.tenantName,
+    'Agent',
+    AgentSchema,
+  );
 
   private readonly fonctionModel = this.useModel.createModel<FonctionDocument>(
     this.tenantName,
@@ -99,6 +108,7 @@ export class AffectationService {
       await this.affectationModel
     )
       .find({})
+      .populate({ path: 'agent', model: await this.agentModel })
       .populate({
         path: 'fonction',
         model: await this.fonctionModel,
@@ -119,6 +129,7 @@ export class AffectationService {
           },
         },
       })
+      .populate({ path: 'grille', model: await this.grilleModel })
       .sort({ _id: -1 });
   }
 

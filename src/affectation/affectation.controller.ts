@@ -15,6 +15,7 @@ import { AgentRubriqueService } from 'src/agent-rubrique/agent-rubrique.service'
 import { UpdateAffectationRubriqueDTO } from 'src/dto/updateAffectationRubrique.dto';
 import { RubriqueService } from 'src/rubrique/rubrique.service';
 import { CreateAgentRubriqueDTO } from 'src/dto/createAgentRubrique.dto';
+import { formatDate } from 'src/utilities/formatDate';
 
 @Controller('affectation')
 export class AffectationController {
@@ -23,6 +24,29 @@ export class AffectationController {
     private readonly agentRubriqueService: AgentRubriqueService,
     private readonly rubriqueService: RubriqueService,
   ) {}
+
+  private listAffectations(affectations: any[]) {
+    const response: any[] = [];
+    for (const affectation of affectations) {
+      const dateFin = affectation.dateFin
+        ? formatDate(affectation.dateFin)
+        : 'à nos jours';
+      response.push({
+        matricule: affectation.agent.matricule,
+        nomPrenom: `${affectation.agent.nom} ${affectation.agent.prenom}`,
+        statut: affectation.statut,
+        periode: `${formatDate(affectation.dateDebut)} - ${dateFin}`,
+        fonction: affectation.fonction.libelle,
+        service:
+          affectation.fonction.rattache === 'Service'
+            ? affectation.fonction.service.libelle
+            : affectation.fonction.direction.libelle,
+        grille: affectation.grille.libelle,
+        _id: affectation._id,
+      });
+    }
+    return response;
+  }
 
   @Post()
   @HttpCode(201)
@@ -67,6 +91,17 @@ export class AffectationController {
         agentRubrique: agentRubrique[0]._id,
       } as unknown as CreateAffectationDTO;
       return await this.affectationService.create(datas);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
+
+  @Get()
+  async findAll() {
+    try {
+      const affectations = await this.affectationService.findAll();
+      return this.listAffectations(affectations);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException('An unknow exception raised');

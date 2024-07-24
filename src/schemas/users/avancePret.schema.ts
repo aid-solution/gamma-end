@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Agent } from './agent.schema';
 import { HydratedDocument } from 'mongoose';
+import { AgentRubrique } from './agentRubrique.schema';
 
 export type AvancePretDocument = HydratedDocument<AvancePret>;
 
@@ -10,29 +11,27 @@ export class AvancePret {
   @Prop({
     required: true,
     trim: true,
-    enum: ['Avance', 'Prêt'],
+    enum: ['Avance', 'Pret'],
   })
   type: string;
 
   @Prop({
-    required: false,
+    required: true,
   })
   dateDebut: Date;
 
   @Prop({
-    required: false,
+    required: true,
   })
   dateFin: Date;
 
   @Prop({
-    required: true,
+    required: false,
   })
-  deduction: boolean;
+  echeance: string;
 
-  @Prop({
-    required: true,
-  })
-  montant: number;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'AgentRubrique' })
+  agentRubrique: AgentRubrique;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Agent' })
   agent: Agent;

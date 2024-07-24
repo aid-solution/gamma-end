@@ -8,6 +8,7 @@ import { CongeSchema, CongeDocument } from 'src/schemas/users/conge.schema';
 import { differenceBetweenDates, formatDate } from 'src/utilities/formatDate';
 import { CreateCongeDTO } from 'src/dto/createConge.dto';
 import { CongeDTO } from 'src/dto/conge.dto';
+import { AgentDocument, AgentSchema } from 'src/schemas/users/agent.schema';
 
 @Injectable()
 export class CongeService {
@@ -27,13 +28,26 @@ export class CongeService {
     CongeSchema,
   );
 
+  private readonly agentModel = this.useModel.createModel<AgentDocument>(
+    this.tenantName,
+    'Agent',
+    AgentSchema,
+  );
+
   async create(congeDto: CreateCongeDTO) {
     return await (await this.congeModel).create(congeDto);
+  }
+
+  async findAll() {
+    return await (await this.congeModel)
+      .find({})
+      .populate({ path: 'agent', model: await this.agentModel });
   }
 
   async findOne(id: string): Promise<CongeDocument> {
     const conge: CongeDocument = await (await this.congeModel).findById(id);
     const data = {
+      agent: conge.agent,
       type: conge.type,
       dateDebut: formatDate(conge.dateDebut, '/'),
       dateFin: formatDate(conge.dateFin, '/'),

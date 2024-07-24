@@ -65,15 +65,15 @@ export class AgentService {
     const response: any[] = [];
     for (const agent of agents) {
       const affectation = affectations.filter(
-        (affecter) => affecter.agent.toString() === agent._id.toString(),
+        (affecter) => affecter.agent._id.toString() === agent._id.toString(),
       )[0].fonction;
       response.push({
+        matricule: agent.matricule,
         nomPrenom: `${agent.nom} ${agent.prenom}`,
         fonction: affectation.libelle,
-        service: affectation.service ? affectation.service.libelle : '',
-        direction: affectation.direction
-          ? affectation.direction.libelle
-          : affectation.service.direction.libelle,
+        service: affectation.service
+          ? affectation.service.libelle
+          : affectation.direction.libelle,
         dateEmbauche: formatDate(agent.dateEmbauche),
         position: 'En activité',
         _id: agent._id,
@@ -201,7 +201,7 @@ export class AgentService {
   async findAll(): Promise<AgentDocument[]> {
     const agents = await (await this.agentModel)
       .find({})
-      .select({ _id: 1, nom: 1, prenom: 1, dateEmbauche: 1 });
+      .select({ _id: 1, matricule: 1, nom: 1, prenom: 1, dateEmbauche: 1 });
     const affectations: any[] = await this.affectationService.findAll();
     return this.listAgents(agents, affectations);
   }

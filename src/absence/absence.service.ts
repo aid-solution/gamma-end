@@ -11,6 +11,7 @@ import {
 import { CreateAbsenceDTO } from 'src/dto/createAbsence.dto';
 import { differenceBetweenDates, formatDate } from 'src/utilities/formatDate';
 import { UpdateAbsenceDTO } from 'src/dto/updateAbsence.dto';
+import { AgentDocument, AgentSchema } from 'src/schemas/users/agent.schema';
 
 @Injectable()
 export class AbsenceService {
@@ -29,8 +30,37 @@ export class AbsenceService {
     AbsenceSchema,
   );
 
+  private readonly agentModel = this.useModel.createModel<AgentDocument>(
+    this.tenantName,
+    'Agent',
+    AgentSchema,
+  );
+
   async create(absenceDto: CreateAbsenceDTO) {
     return await (await this.absenceModel).create(absenceDto);
+  }
+
+  async findAll() {
+    const absences: any[] = await (await this.absenceModel)
+      .find({})
+      .populate({ path: 'agent', model: await this.agentModel });
+    const result: any[] = [];
+    absences.map((absence) => {
+      const data = {
+        matricule: absence.agent.matricule,
+        nomPrenom: `${absence.agent.nom} ${absence.agent.prenom}`,
+        motif: absence.motif,
+        periode: `${formatDate(absence.dateDebut)} - ${formatDate(absence.dateFin)}`,
+        jours: differenceBetweenDates(absence.dateDebut, absence.dateFin),
+        deduction: absence.deduction ? 'Oui' : 'Non',
+        /* type: absence.type,
+        nature: absence.nature, */
+        _id: absence._id,
+      };
+      result.push(data);
+    });
+
+    return result;
   }
 
   async findOne(id: string): Promise<AbsenceDocument> {
@@ -38,6 +68,7 @@ export class AbsenceService {
       await this.absenceModel
     ).findById(id);
     const data = {
+      agent: absence.agent,
       motif: absence.motif,
       dateDebut: formatDate(absence.dateDebut, '/'),
       dateFin: formatDate(absence.dateFin, '/'),
