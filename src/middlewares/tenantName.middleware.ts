@@ -16,7 +16,6 @@ export class TenantNameMiddleware implements NestMiddleware {
     const subdomain = (request.headers['X-TENANT-NAME'] ||
       request.headers['x-tenant-name'] ||
       request.headers['X-Tenant-Name']) as string;
-    console.log(subdomain);
     if (!subdomain) throw new BadRequestException('Subdomain not found');
     // Check if the tenant exists
     const existentTenant =
