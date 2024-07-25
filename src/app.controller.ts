@@ -13,7 +13,8 @@ export class AppController {
   @Get('connection')
   async getConnection(@Req() request: Request): Promise<any> {
     const tenantName = (request.headers['X-TENANT-NAME'] ||
-      request.headers['x-tenant-name']) as string;
+      request.headers['x-tenant-name'] ||
+      request.headers['X-Tenant-Name']) as string;
     if (!tenantName) new BadRequestException('x-tenant-name header is missed');
     const connection = await this.appService.getConnection(tenantName);
     return { name: connection.name, readyState: connection.readyState };

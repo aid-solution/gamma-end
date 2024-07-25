@@ -25,6 +25,7 @@ async function bootstrap() {
       'X-Requested-With',
       'Accept',
       'Authorization',
+      'X-Tenant-name',
       'x-tenant-name',
     ],
     credentials: true,
