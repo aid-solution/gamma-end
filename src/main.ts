@@ -9,6 +9,7 @@ async function bootstrap() {
   const options: CorsOptions = {
     origin: function (origin, callback) {
       const allowed = [
+        /^https?:\/\/[^\.]+\.onrender\.com(\/.*)?$/gm,
         /^https?:\/\/[^\.]+\.gamma-paie\.com(\/.*)?$/gm,
         /^https?:\/\/[^\.]+\.localhost:3000(\/.*)?$/gm,
       ].map((el) => el.test(origin));
