@@ -14,7 +14,7 @@ export class CreateAgentRubriqueDTO {
 
   @IsNotEmpty()
   @IsMongoId()
-  direction: Types.ObjectId;
+  rubrique: Types.ObjectId;
 
   @IsNumber()
   @IsNotEmpty()
@@ -22,9 +22,9 @@ export class CreateAgentRubriqueDTO {
 
   @IsString()
   @IsOptional()
-  dateDebut: string;
+  dateDebut: Date;
 
   @IsString()
   @IsOptional()
-  dateFin: string;
+  dateFin: Date;
 }
