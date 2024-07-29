@@ -91,7 +91,7 @@ export class AgentService {
       const agentRubrique = await this.agentRubriqueService.create([
         rubriqueAgentSalaire,
       ]);
-      console.log(agentRubrique);
+      console.log('Agent Rubrique', agentRubrique);
 
       const createAffectationDto: CreateAffectationDTO = {
         statut: 'Recruitement',
