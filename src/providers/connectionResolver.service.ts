@@ -10,7 +10,7 @@ export class ConnectionResolver {
     try {
       const connection = await mongoose
         .createConnection(
-          `${process.env.MONGO_URI}/${name}?retryWrites=true&w=majority`,
+          `${process.env.MONGO_URI}/${name}?retryWrites=true&w=majority&appName=Cluster0`,
         )
         .asPromise();
       this.connections[name] = connection;

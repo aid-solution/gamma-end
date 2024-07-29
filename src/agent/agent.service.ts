@@ -78,7 +78,7 @@ export class AgentService {
       } = agentDto;
 
       const agent = (await (await this.agentModel).create([createAgentDto]))[0];
-
+      console.log(agent);
       const salaireRubrique = await this.rubriqueService.findOneByCode(100);
       const { salaire, ...rest } = affectationData;
       const rubriqueAgentSalaire = {
@@ -91,6 +91,7 @@ export class AgentService {
       const agentRubrique = await this.agentRubriqueService.create([
         rubriqueAgentSalaire,
       ]);
+      console.log(agentRubrique);
 
       const createAffectationDto: CreateAffectationDTO = {
         statut: 'Recruitement',
@@ -99,22 +100,26 @@ export class AgentService {
         dateDebut: agent.dateEmbauche,
         ...rest,
       };
-      await this.affectationService.create(createAffectationDto);
+      const affection =
+        await this.affectationService.create(createAffectationDto);
+      console.log(affection);
 
       const createAccountDto: CreateAgentAccountDTO = {
         agent: agent._id,
         banque: new ObjectId(agentAccount.banque),
         compte: agentAccount.compte,
       };
-      await this.agentAccountService.create(createAccountDto);
+      const account = await this.agentAccountService.create(createAccountDto);
+      console.log(account);
 
       const chargeDocs = chargeData.map((data: any) => ({
         ...data,
         agent: agent._id,
       }));
-      await this.chargeService.create(chargeDocs);
+      const charge = await this.chargeService.create(chargeDocs);
+      console.log(charge);
 
-      return agent._id;
+      return { _id: agent._id, ...agentDto };
     } catch (error) {
       throw new InternalServerErrorException(
         error,
