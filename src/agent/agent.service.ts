@@ -7,15 +7,12 @@ import { UseModel } from '../providers/useModel.service';
 import { AgentDocument, AgentSchema } from '../schemas/users/agent.schema';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
-
-import { ClientSession } from 'mongoose';
 import { AffectationService } from '../affectation/affectation.service';
 import { ChargeService } from '../charge/charge.service';
 import { ManagerDbService } from 'src/providers/managerDb.service';
 import { getTenantName } from 'src/utilities/getTenantName';
 import { AgentDTO } from 'src/dto/agent.dto';
 import { CreateAffectationDTO } from 'src/dto/createAffectation.dto';
-import { CreateAgentDTO } from 'src/dto/createAgent.dto';
 import { formatDate } from 'src/utilities/formatDate';
 import { AgentAccountService } from 'src/agent-account/agent-account.service';
 import { CreateAgentAccountDTO } from 'src/dto/createAgentAccout.dto';
@@ -50,17 +47,6 @@ export class AgentService {
     AgentSchema,
   );
 
-  private async agentTransaction(
-    session: ClientSession,
-    agentDto: CreateAgentDTO,
-  ) {
-    return await (
-      await this.agentModel
-    ).create([agentDto], {
-      session,
-    });
-  }
-
   private listAgents(agents: any[], affectations: any[]) {
     const response: any[] = [];
     for (const agent of agents) {
@@ -80,67 +66,6 @@ export class AgentService {
       });
     }
     return response;
-  }
-
-  async createWithTransaction(agentDto: AgentDTO) {
-    const session = await (await this.agentModel).startSession();
-    try {
-      session.startTransaction();
-      const {
-        affectation: affectationData,
-        charges: chargeData,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        agentAccount,
-        ...createAgentDto
-      } = agentDto;
-
-      const agent = (
-        await this.agentTransaction(session, createAgentDto)
-      )[0] as AgentDocument;
-
-      // Create the affectation document with the session
-      const createAffectationDto: CreateAffectationDTO = {
-        statut: 'Recruitement',
-        agentRubrique: new ObjectId(''),
-        agent: agent._id,
-        ...affectationData,
-      };
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const affectation = await this.affectationService.createWithTransaction(
-        session,
-        createAffectationDto,
-      );
-
-      // Prepare charge documents and insert them with the session
-      const chargeDocs = chargeData.map((data: any) => ({
-        ...data,
-        agent: agent._id,
-      }));
-      const charge = await this.chargeService.createWithTransaction(
-        session,
-        chargeDocs,
-      );
-
-      // Commit the transaction
-      await session.commitTransaction();
-      session.endSession();
-      const agentCreated = {
-        ...agent,
-        affectation: { ...affectation },
-        charge: { ...charge },
-      };
-      console.log(agentCreated);
-      return agentCreated;
-    } catch (error) {
-      // Abort the transaction on error
-      await session.abortTransaction();
-      session.endSession();
-      console.error('Transaction aborted due to an error: ', error);
-      throw new InternalServerErrorException(
-        error,
-        'An error occured while creating the agent',
-      );
-    }
   }
 
   async create(agentDto: AgentDTO) {

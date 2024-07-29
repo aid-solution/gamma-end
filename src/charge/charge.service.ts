@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
-import { ClientSession } from 'mongoose';
 import { UseModel } from '../providers/useModel.service';
 import { ManagerDbService } from 'src/providers/managerDb.service';
 import { getTenantName } from 'src/utilities/getTenantName';
@@ -25,12 +24,7 @@ export class ChargeService {
     'Charge',
     ChargeSchema,
   );
-  async createWithTransaction(
-    session: ClientSession,
-    chargeDto: CreateChargeDTO[],
-  ) {
-    return await (await this.chargeModel).insertMany(chargeDto, { session });
-  }
+
   async create(chargeDto: CreateChargeDTO[]) {
     return await (await this.chargeModel).insertMany(chargeDto);
   }

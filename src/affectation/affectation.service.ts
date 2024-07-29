@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
-import { ClientSession } from 'mongoose';
 import { UseModel } from '../providers/useModel.service';
 import { ManagerDbService } from 'src/providers/managerDb.service';
 import { getTenantName } from 'src/utilities/getTenantName';
@@ -87,15 +86,6 @@ export class AffectationService {
       'AgentRubrique',
       AgentRubriqueSchema,
     );
-
-  async createWithTransaction(
-    session: ClientSession,
-    affectationDto: CreateAffectationDTO,
-  ) {
-    return await (
-      await this.affectationModel
-    ).create([affectationDto], { session });
-  }
 
   async create(
     affectationDto: CreateAffectationDTO,

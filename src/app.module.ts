@@ -30,6 +30,7 @@ import { AgentAccountModule } from './agent-account/agent-account.module';
 import { AgentRubriqueModule } from './agent-rubrique/agent-rubrique.module';
 import { AbsenceModule } from './absence/absence.module';
 import { CongeModule } from './conge/conge.module';
+import { AvancePretModule } from './avance-pret/avance-pret.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { CongeModule } from './conge/conge.module';
     AgentRubriqueModule,
     AbsenceModule,
     CongeModule,
+    AvancePretModule,
   ],
   controllers: [AppController],
   providers: [
