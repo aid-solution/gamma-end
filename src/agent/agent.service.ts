@@ -269,13 +269,14 @@ export class AgentService {
         ]);
         agentRubrique.push(...createdAgentRubrique);
       }
+
       const salaireRubrique = agentRubriqueSalaire
-        ? agentRubriqueSalaire._id
-        : agentRubrique[0]._id;
+        ? agentRubriqueSalaire._id.toString()
+        : agentRubrique[0]._id.toString();
       if (
         latest.fonction.toString() !== affectationData.fonction ||
         latest.grille.toString() !== affectationData.grille ||
-        latest.agentRubrique !== salaireRubrique
+        String(latest.agentRubrique) !== salaireRubrique
       ) {
         const createAffectationDto: CreateAffectationDTO = {
           agent: new ObjectId(id),
