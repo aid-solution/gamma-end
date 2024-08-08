@@ -40,6 +40,14 @@ export class RubriqueController {
       throw new InternalServerErrorException('An unknow exception raised');
     }
   }
+  @Get('avance-pret')
+  async findAllAvancePret() {
+    try {
+      return await this.rubriqueService.findAllAvancePret();
+    } catch (error) {
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {

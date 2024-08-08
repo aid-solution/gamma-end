@@ -60,6 +60,22 @@ export class RubriqueService {
       .exec();
   }
 
+  async findAllAvancePret() {
+    return await (
+      await this.rubriqueModel
+    )
+      .find({
+        libelle: { $regex: /\b(avance|pret|prêt)\b/, $options: 'i' },
+        assujetiCNSS: false,
+        assujetiImpot: false,
+        entreBrut: false,
+        entreNet: true,
+        gainRetenue: 'Retenue',
+      })
+      .select({ libelle: 1 })
+      .exec();
+  }
+
   async findOne(id: string): Promise<RubriqueDocument> {
     return await (await this.rubriqueModel).findById(id).exec();
   }
