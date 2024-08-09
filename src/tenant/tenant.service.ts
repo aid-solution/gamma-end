@@ -143,7 +143,6 @@ export class TenantService {
       bp,
     } = tenant;
     const tenantFound = {
-      _id,
       raisonSociale,
       nif,
       rccmNumero,
@@ -151,6 +150,7 @@ export class TenantService {
       telephone,
       email,
       bp,
+      _id,
     };
     return {
       tenantFound,

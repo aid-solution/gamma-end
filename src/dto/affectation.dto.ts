@@ -3,7 +3,7 @@ import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export class AffectationDTO {
   @IsString()
   @IsOptional()
-  @IsEnum(['Avancement', 'Promotion', 'Cessation', 'Retraite', 'Recruitement'])
+  @IsEnum(['Avancement', 'Promotion', 'Cessation', 'Retraite', 'Recrutement'])
   statut: string;
 
   @IsString()

@@ -13,7 +13,7 @@ export class Affectation {
   @Prop({
     required: true,
     trim: true,
-    enum: ['Avancement', 'Promotion', 'Cessation', 'Retraite', 'Recruitement'],
+    enum: ['Avancement', 'Promotion', 'Cessation', 'Retraite', 'Recrutement'],
   })
   statut: string;
 

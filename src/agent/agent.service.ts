@@ -93,7 +93,7 @@ export class AgentService {
       ]);
 
       const createAffectationDto: CreateAffectationDTO = {
-        statut: 'Recruitement',
+        statut: 'Recrutement',
         agentRubrique: agentRubrique[0]._id,
         agent: agent._id,
         dateDebut: agent.dateEmbauche,

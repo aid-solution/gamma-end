@@ -11,7 +11,7 @@ export class UpdateAffectationDTO {
 
   @IsString()
   @IsNotEmpty()
-  @IsEnum(['Avancement', 'Promotion', 'Cessation', 'Retraite', 'Recruitement'])
+  @IsEnum(['Avancement', 'Promotion', 'Cessation', 'Retraite', 'Recrutement'])
   statut: string;
 
   @IsString()
