@@ -12,16 +12,14 @@ export class TenantNameMiddleware implements NestMiddleware {
   constructor(private managerDbService: ManagerDbService) {}
 
   async use(request: Request, res: Response, next: NextFunction) {
-    // Check if the subdomain exists
     const subdomain = (request.headers['X-TENANT-NAME'] ||
       request.headers['x-tenant-name'] ||
       request.headers['X-Tenant-Name']) as string;
-    if (!subdomain) throw new BadRequestException('Subdomain not found');
-    // Check if the tenant exists
+    if (!subdomain) throw new BadRequestException('subdomain_not_found');
+
     const existentTenant =
       await this.managerDbService.getTenantExistenceBySubdoamin(subdomain);
-    if (!existentTenant) throw new NotFoundException('Tenant not found');
-    // Tenant exists and continue the server methode
+    if (!existentTenant) throw new NotFoundException('tenant_not_found');
     return next();
   }
 }

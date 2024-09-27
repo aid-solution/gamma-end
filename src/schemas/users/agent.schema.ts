@@ -8,6 +8,12 @@ export class Agent {
     required: true,
     trim: true,
   })
+  expatrie: boolean;
+
+  @Prop({
+    required: true,
+    trim: true,
+  })
   nom: string;
 
   @Prop({

@@ -29,6 +29,7 @@ import {
   ServiceSchema,
 } from 'src/schemas/users/service.schema';
 import { UserDocument, UserSchema } from 'src/schemas/users/user.schema';
+import { RubriqueService } from 'src/rubrique/rubrique.service';
 
 @Injectable()
 export class TenantService {
@@ -36,6 +37,7 @@ export class TenantService {
     private useModel: UseModel,
     @Inject(REQUEST) private readonly request: Request,
     private managerDbService: ManagerDbService,
+    private readonly rubriqueService: RubriqueService,
   ) {}
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
@@ -131,7 +133,29 @@ export class TenantService {
         average: await (await this.echellonModel).countDocuments(),
       },
     ];
-    const tenant = await (await this.tenantModel).findOne({ subdomain }).exec();
+    const tenant: TenantDocument = await (await this.tenantModel)
+      .findOne({ subdomain })
+      .exec();
+    if (tenant && !tenant.initialization) {
+      tenant.initialization = true;
+      const { _id, ...datas } = tenant;
+      const updateDto = {
+        _id: _id.toString(),
+        dbName: datas.dbName,
+        subdomain: datas.subdomain,
+        cotisationNumero: datas.cotisationNumero,
+        email: datas.email,
+        isValidate: true,
+        nif: datas.nif,
+        raisonSociale: datas.raisonSociale,
+        rccmNumero: datas.rccmNumero,
+        telephone: datas.telephone,
+        bp: datas.bp,
+        initialization: true,
+      };
+      await this.update(_id.toString(), updateDto);
+      await this.rubriqueService.initialization();
+    }
     const {
       _id,
       raisonSociale,

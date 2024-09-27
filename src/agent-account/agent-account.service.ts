@@ -10,6 +10,7 @@ import {
 } from 'src/schemas/users/agentAcount.schema';
 import { CreateAgentAccountDTO } from 'src/dto/createAgentAccout.dto';
 import { BanqueDocument, BanqueSchema } from 'src/schemas/users/banque.schema';
+import { AgentDocument, AgentSchema } from 'src/schemas/users/agent.schema';
 
 @Injectable()
 export class AgentAccountService {
@@ -33,6 +34,11 @@ export class AgentAccountService {
     'Banque',
     BanqueSchema,
   );
+  private readonly agentModel = this.useModel.createModel<AgentDocument>(
+    this.tenantName,
+    'Agent',
+    AgentSchema,
+  );
 
   async create(
     createAgentAccoutDto: CreateAgentAccountDTO,
@@ -41,7 +47,12 @@ export class AgentAccountService {
   }
 
   async findAll(): Promise<AgentAccountDocument[]> {
-    return await (await this.agentAccountModel).find({}).exec();
+    return await (
+      await this.agentAccountModel
+    )
+      .find({})
+      .populate({ path: 'banque', model: await this.banqueModel })
+      .exec();
   }
 
   async findOne(id: string): Promise<AgentAccountDocument> {
@@ -57,6 +68,15 @@ export class AgentAccountService {
       .find({ agent })
       .populate({ path: 'banque', model: await this.banqueModel })
       .sort({ _id: -1 });
+  }
+
+  async researchDuplicate(compte: string): Promise<AgentAccountDocument> {
+    return await (
+      await this.agentAccountModel
+    )
+      .findOne({ compte })
+      .populate({ path: 'agent', model: await this.agentModel })
+      .select({ compte: 1, agent: 1 });
   }
 
   async updateByAgent(

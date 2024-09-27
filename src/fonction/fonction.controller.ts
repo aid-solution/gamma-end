@@ -46,6 +46,15 @@ export class FonctionController {
     }
   }
 
+  @Get('/duplicate/:search')
+  async researchDuplicate(@Param('search') search: string) {
+    try {
+      return await this.fonctionService.researchDuplicate(search);
+    } catch (error) {
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
+
   @Patch()
   async updateFonction(@Body() fonctionDto: FonctionDTO) {
     const { _id, ...fonction } = fonctionDto;

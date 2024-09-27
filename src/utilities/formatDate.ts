@@ -8,7 +8,18 @@ export const formatDate = (date: Date, separte: string = '-') => {
 };
 
 export const differenceBetweenDates = (debut: Date, fin: Date) => {
-  const diffTime = Math.abs(debut.getTime() - fin.getTime());
+  const includeBegin = new Date(
+    Date.UTC(debut.getFullYear(), debut.getMonth(), debut.getDate(), 0, 0, 0),
+  );
+  includeBegin.setDate(includeBegin.getDate() - 1);
+  const diffTime = Math.abs(includeBegin.getTime() - fin.getTime());
   const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
   return days;
+};
+
+export const getLastDayOfMonth = (date: Date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const lastDay = new Date(year, month + 1, 0);
+  return new Date(Date.UTC(year, month, lastDay.getDate(), 0, 0, 0));
 };

@@ -9,6 +9,7 @@ import {
   RubriqueSchema,
 } from 'src/schemas/users/rubrique.schema';
 import { CreateRubriqueDTO } from 'src/dto/createRubrique.dto';
+import { initial } from 'src/utilities/initialRubriques';
 
 @Injectable()
 export class RubriqueService {
@@ -26,6 +27,10 @@ export class RubriqueService {
     RubriqueSchema,
   );
 
+  async initialization() {
+    (await this.rubriqueModel).insertMany(initial);
+  }
+
   async create(
     createRubriqueDto: CreateRubriqueDTO,
   ): Promise<RubriqueDocument> {
@@ -41,6 +46,20 @@ export class RubriqueService {
           { code: { $ne: 100 } },
           { code: { $ne: 154 } },
           { code: { $ne: 201 } },
+          { code: { $ne: 633 } },
+          { code: { $ne: 220 } },
+          { code: { $ne: 102 } },
+          { code: { $ne: 110 } },
+          { code: { $ne: 111 } },
+          { code: { $ne: 155 } },
+          { code: { $ne: 156 } },
+          { code: { $ne: 202 } },
+          { code: { $ne: 203 } },
+          {
+            libelle: {
+              $not: { $regex: /\b(pret|prêt)\b/, $options: 'i' },
+            },
+          },
         ],
       })
       .exec();
@@ -51,10 +70,19 @@ export class RubriqueService {
       await this.rubriqueModel
     )
       .find({
-        $and: [
+        $or: [
           { code: { $eq: 100 } },
           { code: { $eq: 154 } },
           { code: { $eq: 201 } },
+          { code: { $eq: 633 } },
+          { code: { $eq: 220 } },
+          { code: { $eq: 102 } },
+          { code: { $eq: 110 } },
+          { code: { $eq: 111 } },
+          { code: { $eq: 155 } },
+          { code: { $eq: 156 } },
+          { code: { $eq: 202 } },
+          { code: { $eq: 203 } },
         ],
       })
       .exec();
@@ -81,7 +109,27 @@ export class RubriqueService {
   }
 
   async findOneByCode(code: number): Promise<RubriqueDocument> {
-    return await (await this.rubriqueModel).findOne({ code }).exec();
+    const findByCode = await (await this.rubriqueModel)
+      .findOne({ code })
+      .exec();
+    const rubrique = initial.find((init) => init.code === code);
+    if (!findByCode && rubrique) {
+      return this.create(rubrique);
+    }
+    return findByCode;
+  }
+
+  async researchDuplicate(search: string): Promise<RubriqueDocument> {
+    return await (
+      await this.rubriqueModel
+    )
+      .findOne({
+        $or: [
+          { libelle: search },
+          { code: Number.isNaN(+search) ? 0 : search },
+        ],
+      })
+      .select({ libelle: 1, code: 1 });
   }
 
   async update(

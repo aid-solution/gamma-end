@@ -32,7 +32,7 @@ export class ServiceRubriqueController {
       tableauRetour.push({
         _id: tab.rubrique._id,
         code: tab.rubrique.code,
-        direction: tab.direction ? tab.direction.libelle : '--',
+        origine: tab.direction ? tab.direction.libelle : '',
         rubrique: tab.rubrique.libelle,
         dateDebut: tab.dateDebut,
         dateFin: tab.dateFin,

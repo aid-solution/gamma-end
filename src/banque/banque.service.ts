@@ -35,6 +35,16 @@ export class BanqueService {
     return await (await this.banqueModel).findById(id).exec();
   }
 
+  async researchDuplicate(search: string): Promise<BanqueDocument> {
+    return await (
+      await this.banqueModel
+    )
+      .findOne({
+        $or: [{ libelle: search }, { adresse: search }, { bp: search }],
+      })
+      .exec();
+  }
+
   async update(
     id: string,
     updateBanqueDto: CreateBanqueDTO,

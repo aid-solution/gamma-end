@@ -123,6 +123,10 @@ export class ServiceService {
       .exec();
   }
 
+  async researchDuplicate(libelle: string): Promise<ServiceDocument> {
+    return await (await this.serviceModel).findOne({ libelle }).exec();
+  }
+
   async update(id: string, updateServiceDto: ServiceDTO) {
     const oldRubrique = await this.serviceRubriqueService.findAllByService(id);
 

@@ -65,6 +65,11 @@ export class GrilleService {
       .populate({ path: 'categorie', model: await this.categorieModel })
       .exec();
   }
+
+  async researchDuplicate(libelle: string): Promise<GrilleDocument> {
+    return await (await this.grilleModel).findOne({ libelle }).exec();
+  }
+
   async update(
     id: string,
     updateGrilleDto: CreateGrilleDTO,

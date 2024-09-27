@@ -46,6 +46,15 @@ export class ServiceController {
     }
   }
 
+  @Get('/duplicate/:search')
+  async researchDuplicate(@Param('search') search: string) {
+    try {
+      return await this.serviceService.researchDuplicate(search);
+    } catch (error) {
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
+
   @Patch()
   async updateService(@Body() serviceDto: ServiceDTO) {
     const { _id, ...service } = serviceDto;

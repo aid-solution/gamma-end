@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsEnum,
   IsNotEmpty,
   IsOptional,
@@ -14,6 +15,10 @@ export class AgentDTO {
   @IsOptional()
   @IsString()
   _id: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  expatrie: boolean;
 
   @IsString()
   @IsNotEmpty()

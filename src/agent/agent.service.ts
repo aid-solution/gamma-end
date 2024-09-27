@@ -23,6 +23,7 @@ import { RubriqueService } from 'src/rubrique/rubrique.service';
 import { CreateAgentRubriqueDTO } from 'src/dto/createAgentRubrique.dto';
 import { UpdateAffectationRubriqueDTO } from 'src/dto/updateAffectationRubrique.dto';
 import { UpdateAffectationDTO } from 'src/dto/updateAffectation.dto';
+import { CongeService } from 'src/conge/conge.service';
 
 @Injectable()
 export class AgentService {
@@ -31,6 +32,7 @@ export class AgentService {
     @Inject(REQUEST) private readonly request: Request,
     private managerDbService: ManagerDbService,
     private readonly affectationService: AffectationService,
+    private readonly congeService: CongeService,
     private readonly agentAccountService: AgentAccountService,
     private readonly chargeService: ChargeService,
     private readonly agentRubriqueService: AgentRubriqueService,
@@ -47,12 +49,31 @@ export class AgentService {
     AgentSchema,
   );
 
-  private listAgents(agents: any[], affectations: any[]) {
+  private positionAgent = (affectation: any, conge: any): string => {
+    const today = new Date();
+    if (
+      affectation.dateFin &&
+      today >= affectation.dateDebut &&
+      today <= affectation.dateFin
+    ) {
+      return 'En fin de contrat';
+    } else {
+      if (conge && today >= conge.dateDebut && today <= conge.dateFin) {
+        return 'En congé';
+      }
+    }
+    return 'En activité';
+  };
+
+  private listAgents(agents: any[], affectations: any[], conges: any[]) {
     const response: any[] = [];
     for (const agent of agents) {
-      const affectation = affectations.filter(
+      const affectation = affectations.find(
         (affecter) => affecter.agent._id.toString() === agent._id.toString(),
-      )[0].fonction;
+      ).fonction;
+      const conge = conges.find(
+        (conge) => conge.agent._id.toString() === agent._id.toString(),
+      );
       response.push({
         matricule: agent.matricule,
         nomPrenom: `${agent.nom} ${agent.prenom}`,
@@ -61,7 +82,7 @@ export class AgentService {
           ? affectation.service.libelle
           : affectation.direction.libelle,
         dateEmbauche: formatDate(agent.dateEmbauche),
-        position: 'En activité',
+        position: this.positionAgent(affectation, conge),
         _id: agent._id,
       });
     }
@@ -128,7 +149,8 @@ export class AgentService {
       .find({})
       .select({ _id: 1, matricule: 1, nom: 1, prenom: 1, dateEmbauche: 1 });
     const affectations: any[] = await this.affectationService.findAll();
-    return this.listAgents(agents, affectations);
+    const conges: any[] = await this.congeService.findAll();
+    return this.listAgents(agents, affectations, conges);
   }
 
   async findOne(id: string): Promise<any> {
@@ -193,6 +215,7 @@ export class AgentService {
 
       return {
         _id: agentFound._id,
+        expatrie: agentFound.expatrie || false,
         nom: agentFound.nom,
         prenom: agentFound.prenom,
         dateNaissance: formatDate(agentFound.dateNaissance, '/'),
@@ -219,6 +242,29 @@ export class AgentService {
         'An error occured while creating the agent',
       );
     }
+  }
+
+  async researchDuplicate(data: string) {
+    const agent = await (
+      await this.agentModel
+    )
+      .findOne({
+        $or: [
+          { matricule: data },
+          { telephone: data },
+          { email: data },
+          { cotisationNumero: data },
+        ],
+      })
+      .select({
+        nom: 1,
+        prenom: 1,
+        matricule: 1,
+        telephone: 1,
+        email: 1,
+        cotisationNumero: 1,
+      });
+    return agent;
   }
 
   async update(id: string, updateAgentDto: UpdateAgentDTO) {
@@ -308,7 +354,7 @@ export class AgentService {
       }));
 
       const chargeWithEmptyId = chargeDocs.filter(
-        (charge) => charge._id === '',
+        (charge) => charge._id === undefined || charge._id === '',
       );
 
       const chargeWithIdIsNoEmpty = chargeDocs.filter(

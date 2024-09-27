@@ -45,6 +45,15 @@ export class EchellonController {
     }
   }
 
+  @Get('/duplicate/:search')
+  async researchDuplicate(@Param('search') search: string) {
+    try {
+      return await this.echellonService.researchDuplicate(search);
+    } catch (error) {
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
+
   @Patch()
   async updateEchellon(@Body() echellonDto: EchellonDTO) {
     const { _id, ...echellon } = echellonDto;

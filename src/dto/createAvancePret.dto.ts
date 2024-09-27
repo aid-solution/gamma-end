@@ -30,6 +30,10 @@ export class CreateAvancePretDTO {
   @IsNotEmpty()
   dateDebut: Date;
 
+  @IsString()
+  @IsNotEmpty()
+  dateFin: Date;
+
   @IsNumber()
   @IsOptional()
   dureeEcheance: number;

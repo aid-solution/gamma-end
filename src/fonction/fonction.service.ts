@@ -144,6 +144,11 @@ export class FonctionService {
       .populate({ path: 'service', model: await this.serviceModel })
       .exec();
   }
+
+  async researchDuplicate(libelle: string): Promise<FonctionDocument> {
+    return await (await this.fonctionModel).findOne({ libelle }).exec();
+  }
+
   async update(id: string, updateFonctionDto: FonctionDTO) {
     const oldRubrique =
       await this.fonctionRubriqueService.findAllByFonction(id);

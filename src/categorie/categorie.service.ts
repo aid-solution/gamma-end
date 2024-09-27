@@ -40,6 +40,11 @@ export class CategorieService {
   async findOne(id: string): Promise<CategorieDocument> {
     return await (await this.categorieModel).findById(id).exec();
   }
+
+  async researchDuplicate(libelle: string): Promise<CategorieDocument> {
+    return await (await this.categorieModel).findOne({ libelle }).exec();
+  }
+
   async update(
     id: string,
     updateCategorieDto: CreateCategorieDTO,

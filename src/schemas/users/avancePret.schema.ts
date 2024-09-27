@@ -32,6 +32,11 @@ export class AvancePret {
   dateDebut: Date;
 
   @Prop({
+    required: true,
+  })
+  dateFin: Date;
+
+  @Prop({
     required: false,
   })
   dureeEcheance: number;

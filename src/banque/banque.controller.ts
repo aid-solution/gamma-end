@@ -47,6 +47,15 @@ export class BanqueController {
     }
   }
 
+  @Get('/duplicate/:search')
+  async researchDuplicate(@Param('search') search: string) {
+    try {
+      return await this.banqueService.researchDuplicate(search);
+    } catch (error) {
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
+
   @Patch()
   async updateBanque(@Body() banqueDto: BanqueDTO) {
     const { _id, ...banque } = banqueDto;

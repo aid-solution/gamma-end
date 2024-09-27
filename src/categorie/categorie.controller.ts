@@ -47,6 +47,15 @@ export class CategorieController {
     }
   }
 
+  @Get('/duplicate/:search')
+  async researchDuplicate(@Param('search') search: string) {
+    try {
+      return await this.categorieService.researchDuplicate(search);
+    } catch (error) {
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
+
   @Patch()
   async updateEchellon(@Body() echellonDto: EchellonDTO) {
     const { _id, ...echellon } = echellonDto;

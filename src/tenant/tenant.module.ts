@@ -6,6 +6,7 @@ import { ManagerDbService } from 'src/providers/managerDb.service';
 import { TenantCachingService } from 'src/providers/tenantCaching.service';
 import { UseModel } from 'src/providers/useModel.service';
 import { ServiceRubriqueService } from 'src/service-rubrique/service-rubrique.service';
+import { RubriqueService } from 'src/rubrique/rubrique.service';
 
 @Module({
   controllers: [TenantController],
@@ -16,6 +17,8 @@ import { ServiceRubriqueService } from 'src/service-rubrique/service-rubrique.se
     ManagerDbService,
     TenantCachingService,
     ServiceRubriqueService,
+    RubriqueService,
   ],
+  exports: [TenantService],
 })
 export class TenantModule {}

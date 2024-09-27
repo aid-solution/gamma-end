@@ -14,7 +14,7 @@ import {
   RubriqueDocument,
   RubriqueSchema,
 } from 'src/schemas/users/rubrique.schema';
-import { formatDate } from 'src/utilities/formatDate';
+import { formatDate, getLastDayOfMonth } from 'src/utilities/formatDate';
 import { getTenantName } from 'src/utilities/getTenantName';
 
 @Injectable()
@@ -48,8 +48,18 @@ export class AvancePretService {
     RubriqueSchema,
   );
 
-  async create(absenceDto: CreateAvancePretDTO) {
-    return await (await this.avancePretModel).create(absenceDto);
+  async create(avancePretDto: CreateAvancePretDTO) {
+    const { dateDebut, ...rest } = avancePretDto;
+    const fin = new Date(dateDebut);
+    const avancePret = {
+      ...rest,
+      dateDebut: new Date(dateDebut),
+      dateFin:
+        rest.type === 'Avance'
+          ? getLastDayOfMonth(fin)
+          : fin.setMonth(fin.getMonth() + rest.dureeEcheance - 1),
+    };
+    return await (await this.avancePretModel).create(avancePret);
   }
 
   async findAll() {
@@ -94,12 +104,61 @@ export class AvancePretService {
     return data;
   }
 
+  async findByPeriod(
+    debutMois: Date,
+    finMois: Date,
+  ): Promise<AvancePretDocument[]> {
+    return await (
+      await this.avancePretModel
+    )
+      .find({
+        $or: [
+          // Document entièrement dans le mois
+          {
+            dateDebut: { $gte: debutMois },
+            dateFin: { $lte: finMois },
+          },
+          // Document englobe le mois
+          {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $gte: finMois },
+          },
+          // Document commence avant et finit dans le mois
+          {
+            dateDebut: { $lt: debutMois },
+            dateFin: { $gte: debutMois },
+          },
+          // Document commence pendant le mois et n'a pas de dateFin
+          {
+            dateDebut: { $lte: finMois, $gt: debutMois },
+            dateFin: { $exists: false },
+          },
+          // Document actif avant le mois sans dateFin
+          {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $exists: false },
+          },
+        ],
+      })
+      .populate({ path: 'rubrique', model: await this.rubriqueModel });
+  }
+
   async update(
     updateAvancePretDto: UpdateAvancePretDTO,
   ): Promise<AvancePretDocument> {
     const { _id, ...datas } = updateAvancePretDto;
+    const { dateDebut, ...rest } = datas;
+    const fin = new Date(dateDebut);
+    const avancePret = {
+      ...rest,
+      dateDebut: new Date(dateDebut),
+      dateFin:
+        rest.type === 'Avance'
+          ? getLastDayOfMonth(fin)
+          : fin.setMonth(fin.getMonth() + rest.dureeEcheance - 1),
+    };
     const update = (await (await this.avancePretModel)
-      .findByIdAndUpdate(_id, datas, { new: true })
+      .findByIdAndUpdate(_id, avancePret, { new: true })
       .exec()) as unknown as AvancePretDocument;
     return update;
   }

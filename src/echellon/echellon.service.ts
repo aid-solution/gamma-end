@@ -39,6 +39,11 @@ export class EchellonService {
   async findOne(id: string): Promise<EchellonDocument> {
     return await (await this.echellonModel).findById(id).exec();
   }
+
+  async researchDuplicate(libelle: string): Promise<EchellonDocument> {
+    return await (await this.echellonModel).findOne({ libelle }).exec();
+  }
+
   async update(
     id: string,
     updateEchellonDto: CreateEchellonDTO,

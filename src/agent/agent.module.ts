@@ -10,6 +10,7 @@ import { ChargeService } from 'src/charge/charge.service';
 import { AgentAccountService } from 'src/agent-account/agent-account.service';
 import { AgentRubriqueService } from 'src/agent-rubrique/agent-rubrique.service';
 import { RubriqueService } from 'src/rubrique/rubrique.service';
+import { CongeService } from 'src/conge/conge.service';
 
 @Module({
   controllers: [AgentController],
@@ -20,6 +21,7 @@ import { RubriqueService } from 'src/rubrique/rubrique.service';
     ManagerDbService,
     TenantCachingService,
     AffectationService,
+    CongeService,
     ChargeService,
     AgentAccountService,
     AgentRubriqueService,

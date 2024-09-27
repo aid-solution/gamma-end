@@ -50,6 +50,15 @@ export class AgentController {
     }
   }
 
+  @Get('/duplicate/:data')
+  async researchDuplicate(@Param('data') data: string) {
+    try {
+      return await this.agentService.researchDuplicate(data);
+    } catch (error) {
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
+
   @Patch()
   @UsePipes(ConvertToOriginalTypePipe)
   async update(@Body() updateAgentDto: UpdateAgentDTO) {

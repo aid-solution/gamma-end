@@ -26,12 +26,10 @@ export class AuthMiddleware implements NestMiddleware {
     } catch (error) {
       throw new UnauthorizedException('Failed auth');
     }
-    // check user existence
+
     const user = await this.usersService.findOne(payload.id);
     if (!user) throw new NotFoundException('User not found');
 
-    // 💡 We're assigning the payload to the request object here
-    // so that we can access it in our route handlers
     request['user'] = user;
     return next();
   }

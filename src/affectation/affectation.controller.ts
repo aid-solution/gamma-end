@@ -16,6 +16,7 @@ import { UpdateAffectationRubriqueDTO } from 'src/dto/updateAffectationRubrique.
 import { RubriqueService } from 'src/rubrique/rubrique.service';
 import { CreateAgentRubriqueDTO } from 'src/dto/createAgentRubrique.dto';
 import { formatDate } from 'src/utilities/formatDate';
+import { AffectationDocument } from 'src/schemas/users/affectation.schema';
 
 @Controller('affectation')
 export class AffectationController {
@@ -25,7 +26,7 @@ export class AffectationController {
     private readonly rubriqueService: RubriqueService,
   ) {}
 
-  private listAffectations(affectations: any[]) {
+  private listAffectations(affectations: AffectationDocument[]) {
     const response: any[] = [];
     for (const affectation of affectations) {
       const dateFin = affectation.dateFin

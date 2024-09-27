@@ -26,7 +26,7 @@ export class FonctionRubriqueService {
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
   );
-  private readonly FonctionRubriqueFonctionModel =
+  private readonly fonctionRubriqueFonctionModel =
     this.useModel.createModel<FonctionRubriqueDocument>(
       this.tenantName,
       'FonctionRubrique',
@@ -41,23 +41,23 @@ export class FonctionRubriqueService {
 
   async create(createFonctionDto: CreateFonctionRubriqueDTO[]) {
     return await (
-      await this.FonctionRubriqueFonctionModel
+      await this.fonctionRubriqueFonctionModel
     ).insertMany(createFonctionDto);
   }
 
   async findAll(): Promise<FonctionRubriqueDocument[]> {
-    return await (await this.FonctionRubriqueFonctionModel).find({}).exec();
+    return await (await this.fonctionRubriqueFonctionModel).find({}).exec();
   }
 
   async findOne(id: string): Promise<FonctionRubriqueDocument> {
-    return await (await this.FonctionRubriqueFonctionModel).findById(id).exec();
+    return await (await this.fonctionRubriqueFonctionModel).findById(id).exec();
   }
 
   async findAllByFonction(
     fonction: string,
   ): Promise<FonctionRubriqueDocument[]> {
     return await (
-      await this.FonctionRubriqueFonctionModel
+      await this.fonctionRubriqueFonctionModel
     )
       .find({ fonction: fonction })
       .populate({ path: 'rubrique', model: await this.rubriqueModel })
@@ -68,11 +68,50 @@ export class FonctionRubriqueService {
     fonction: string,
   ): Promise<FonctionRubriqueDocument[]> {
     return await (
-      await this.FonctionRubriqueFonctionModel
+      await this.fonctionRubriqueFonctionModel
     )
       .find({ fonction: fonction, dateFin: { $exists: false } })
       .populate({ path: 'rubrique', model: await this.rubriqueModel })
       .exec();
+  }
+
+  async findByPeriod(
+    debutMois: Date,
+    finMois: Date,
+  ): Promise<FonctionRubriqueDocument[]> {
+    return await (
+      await this.fonctionRubriqueFonctionModel
+    )
+      .find({
+        $or: [
+          // Document entièrement dans le mois
+          {
+            dateDebut: { $gte: debutMois },
+            dateFin: { $lte: finMois },
+          },
+          // Document englobe le mois
+          {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $gte: finMois },
+          },
+          // Document commence avant et finit dans le mois
+          {
+            dateDebut: { $lt: debutMois },
+            dateFin: { $gte: debutMois },
+          },
+          // Document commence pendant le mois et n'a pas de dateFin
+          {
+            dateDebut: { $lte: finMois, $gt: debutMois },
+            dateFin: { $exists: false },
+          },
+          // Document actif avant le mois sans dateFin
+          {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $exists: false },
+          },
+        ],
+      })
+      .populate({ path: 'rubrique', model: await this.rubriqueModel });
   }
 
   async update(
@@ -86,8 +125,88 @@ export class FonctionRubriqueService {
     }));
 
     const result = await (
-      await this.FonctionRubriqueFonctionModel
+      await this.fonctionRubriqueFonctionModel
     ).bulkWrite(bulkOps);
+    return result;
+  }
+
+  async getMontantCNSSByFonction(): Promise<any[]> {
+    const result = await (
+      await this.fonctionRubriqueFonctionModel
+    ).aggregate([
+      {
+        $lookup: {
+          from: 'rubriques',
+          localField: 'rubrique',
+          foreignField: '_id',
+          as: 'rubriqueDetails',
+        },
+      },
+      {
+        $unwind: '$rubriqueDetails',
+      },
+      {
+        $match: {
+          'rubriqueDetails.assujetiCNSS': true,
+          'rubriqueDetails.entreBrut': true,
+        },
+      },
+      {
+        $group: {
+          _id: '$fonction',
+          montant: { $sum: '$montant' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          rubrique: 'rubriqueDetails._id',
+          fonction: '$_id',
+          totalMontant: 1,
+        },
+      },
+    ]);
+
+    return result;
+  }
+
+  async getMontantImpotByFonction(): Promise<any[]> {
+    const result = await (
+      await this.fonctionRubriqueFonctionModel
+    ).aggregate([
+      {
+        $lookup: {
+          from: 'rubriques',
+          localField: 'rubrique',
+          foreignField: '_id',
+          as: 'rubriqueDetails',
+        },
+      },
+      {
+        $unwind: '$rubriqueDetails',
+      },
+      {
+        $match: {
+          'rubriqueDetails.assujetiImpot': true,
+          'rubriqueDetails.entreBrut': true,
+        },
+      },
+      {
+        $group: {
+          _id: '$fonction',
+          montant: { $sum: '$montant' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          rubrique: 'rubriqueDetails._id',
+          fonction: '$_id',
+          totalMontant: 1,
+        },
+      },
+    ]);
+
     return result;
   }
 }

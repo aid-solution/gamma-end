@@ -46,6 +46,15 @@ export class DirectionController {
     }
   }
 
+  @Get('/duplicate/:search')
+  async researchDuplicate(@Param('search') search: string) {
+    try {
+      return await this.directionService.researchDuplicate(search);
+    } catch (error) {
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
+
   @Patch()
   async update(@Body() directionDto: DirectionDTO) {
     const { _id, ...direction } = directionDto;

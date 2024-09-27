@@ -35,7 +35,7 @@ export class AuthController {
   async signIn(@Body() signInDto: SignInDTO, @Res() response: Response) {
     try {
       const user = await this.usersService.findOneWithLogin(signInDto.login);
-      if (!user) throw new NotFoundException(`User not found`);
+      if (!user) throw new NotFoundException(`user_not_found`);
 
       //check password matching
       const isPasswordMatch = await compare(signInDto.password, user.password);
@@ -76,7 +76,7 @@ export class AuthController {
       );
 
       // check for user existence
-      if (!user) throw new NotFoundException(`User not found`);
+      if (!user) throw new NotFoundException(`user_not_found`);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const token = await this.authService.createValidationToken(
         createValidationTokenDto,

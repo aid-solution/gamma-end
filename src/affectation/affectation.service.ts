@@ -29,6 +29,10 @@ import {
 import { formatDate } from 'src/utilities/formatDate';
 import { UpdateAffectationDTO } from 'src/dto/updateAffectation.dto';
 import { AgentDocument, AgentSchema } from 'src/schemas/users/agent.schema';
+import {
+  CategorieDocument,
+  CategorieSchema,
+} from 'src/schemas/users/categorie.schema';
 
 @Injectable()
 export class AffectationService {
@@ -79,6 +83,12 @@ export class AffectationService {
     'Grille',
     GrilleSchema,
   );
+  private readonly categorieModel =
+    this.useModel.createModel<CategorieDocument>(
+      this.tenantName,
+      'Categorie',
+      CategorieSchema,
+    );
 
   private readonly agentRubriqueModel =
     this.useModel.createModel<AgentRubriqueDocument>(
@@ -165,6 +175,73 @@ export class AffectationService {
 
   async findOneWithoutPopulate(id: string): Promise<any> {
     return await (await this.affectationModel).findById(id);
+  }
+
+  async findByPeriod(
+    debutMois: Date,
+    finMois: Date,
+  ): Promise<AffectationDocument[]> {
+    return await (
+      await this.affectationModel
+    )
+      .find({
+        $or: [
+          // Document entièrement dans le mois
+          {
+            dateDebut: { $gte: debutMois },
+            dateFin: { $lte: finMois },
+          },
+          // Document englobe le mois
+          {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $gte: finMois },
+          },
+          // Document commence avant et finit dans le mois
+          {
+            dateDebut: { $lt: debutMois },
+            dateFin: { $gte: debutMois },
+          },
+          // Document commence pendant le mois et n'a pas de dateFin
+          {
+            dateDebut: { $lte: finMois, $gt: debutMois },
+            dateFin: { $exists: false },
+          },
+          // Document actif avant le mois sans dateFin
+          {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $exists: false },
+          },
+        ],
+      })
+      .populate({ path: 'agent', model: await this.agentModel })
+      .populate({
+        path: 'fonction',
+        model: await this.fonctionModel,
+        populate: {
+          path: 'service',
+          model: await this.serviceModel,
+        },
+      })
+      .populate({
+        path: 'fonction',
+        model: await this.fonctionModel,
+        populate: {
+          path: 'direction',
+          model: await this.directionModel,
+        },
+      })
+      .populate({
+        path: 'grille',
+        model: await this.grilleModel,
+        populate: {
+          path: 'categorie',
+          model: await this.categorieModel,
+        },
+      })
+      .populate({
+        path: 'agentRubrique',
+        model: await this.agentRubriqueModel,
+      });
   }
 
   async update(

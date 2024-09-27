@@ -63,6 +63,11 @@ export class Tenant {
     trim: true,
   })
   subdomain: string;
+
+  @Prop({
+    required: true,
+  })
+  initialization: boolean;
 }
 
 export const TenantSchema = SchemaFactory.createForClass(Tenant);

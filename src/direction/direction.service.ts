@@ -97,6 +97,11 @@ export class DirectionService {
   async findOne(id: string): Promise<DirectionDocument> {
     return await (await this.directionModel).findById(id).exec();
   }
+
+  async researchDuplicate(libelle: string): Promise<DirectionDocument> {
+    return await (await this.directionModel).findOne({ libelle }).exec();
+  }
+
   async update(id: string, updateDirectionDto: DirectionDTO) {
     const oldRubrique =
       await this.directionRubriqueService.findAllByDirection(id);

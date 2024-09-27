@@ -50,6 +50,15 @@ export class GrilleController {
     }
   }
 
+  @Get('/duplicate/:search')
+  async researchDuplicate(@Param('search') search: string) {
+    try {
+      return await this.grilleService.researchDuplicate(search);
+    } catch (error) {
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
+
   @Patch()
   @UsePipes(ConvertToOriginalTypePipe)
   async update(@Body() grilleDto: GrilleDTO) {

@@ -75,6 +75,31 @@ export class CongeService {
     return listConge;
   }
 
+  async findByPeriod(debutMois: Date, finMois: Date): Promise<CongeDocument[]> {
+    return await (
+      await this.congeModel
+    ).find({
+      $or: [
+        {
+          dateDebut: { $gte: debutMois },
+          dateFin: { $lte: finMois },
+        },
+        {
+          dateDebut: { $lte: debutMois },
+          dateFin: { $gte: finMois },
+        },
+        {
+          dateDebut: { $gte: debutMois },
+          dateFin: { $gte: finMois },
+        },
+        {
+          dateDebut: { $lte: debutMois },
+          dateFin: { $gte: finMois },
+        },
+      ],
+    });
+  }
+
   async update(updateCongeDto: CongeDTO): Promise<CongeDocument> {
     const { _id, ...datas } = updateCongeDto;
     const update = (await (await this.congeModel)

@@ -29,12 +29,12 @@ export class FonctionRubriqueController {
       tableauRetour.push({
         _id: tab.rubrique._id,
         code: tab.rubrique.code,
-        rattacheA: tab.service
+        origine: tab.service
           ? tab.service.libelle
           : tab.direction
             ? tab.direction.libelle
-            : '--',
-        rubrique: tab.rubrique.libelle,
+            : '',
+        libelle: tab.rubrique.libelle,
         dateDebut: tab.dateDebut,
         dateFin: tab.dateFin,
         montant: tab.montant,

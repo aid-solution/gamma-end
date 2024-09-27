@@ -58,6 +58,15 @@ export class RubriqueController {
     }
   }
 
+  @Get('/duplicate/:search')
+  async researchDuplicate(@Param('search') search: string) {
+    try {
+      return await this.rubriqueService.researchDuplicate(search);
+    } catch (error) {
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
+
   @Patch()
   @UsePipes(ConvertToOriginalTypePipe)
   async update(@Body() rubriqueDto: RubriqueDTO) {

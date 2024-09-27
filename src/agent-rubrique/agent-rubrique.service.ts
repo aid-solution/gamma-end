@@ -71,6 +71,45 @@ export class AgentRubriqueService {
       .exec();
   }
 
+  async findByPeriod(
+    debutMois: Date,
+    finMois: Date,
+  ): Promise<AgentRubriqueDocument[]> {
+    return await (
+      await this.agentRubriqueModel
+    )
+      .find({
+        $or: [
+          // Document entièrement dans le mois
+          {
+            dateDebut: { $gte: debutMois },
+            dateFin: { $lte: finMois },
+          },
+          // Document englobe le mois
+          {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $gte: finMois },
+          },
+          // Document commence avant et finit dans le mois
+          {
+            dateDebut: { $lt: debutMois },
+            dateFin: { $gte: debutMois },
+          },
+          // Document commence pendant le mois et n'a pas de dateFin
+          {
+            dateDebut: { $lte: finMois, $gt: debutMois },
+            dateFin: { $exists: false },
+          },
+          // Document actif avant le mois sans dateFin
+          {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $exists: false },
+          },
+        ],
+      })
+      .populate({ path: 'rubrique', model: await this.rubriqueModel });
+  }
+
   async update(
     updateAgentRubriqueDto: UpdateAffectationRubriqueDTO[],
   ): Promise<BulkWriteResult> {
@@ -82,6 +121,86 @@ export class AgentRubriqueService {
     }));
 
     const result = await (await this.agentRubriqueModel).bulkWrite(bulkOps);
+    return result;
+  }
+
+  async getMontantCNSSByAgent(): Promise<any[]> {
+    const result = await (
+      await this.agentRubriqueModel
+    ).aggregate([
+      {
+        $lookup: {
+          from: 'rubriques',
+          localField: 'rubrique',
+          foreignField: '_id',
+          as: 'rubriqueDetails',
+        },
+      },
+      {
+        $unwind: '$rubriqueDetails',
+      },
+      {
+        $match: {
+          'rubriqueDetails.assujetiCNSS': true,
+          'rubriqueDetails.entreBrut': true,
+        },
+      },
+      {
+        $group: {
+          _id: '$agent',
+          montant: { $sum: '$montant' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          rubrique: 'rubriqueDetails._id',
+          agent: '$_id',
+          totalMontant: 1,
+        },
+      },
+    ]);
+
+    return result;
+  }
+
+  async getMontantImpotByAgent(): Promise<any[]> {
+    const result = await (
+      await this.agentRubriqueModel
+    ).aggregate([
+      {
+        $lookup: {
+          from: 'rubriques',
+          localField: 'rubrique',
+          foreignField: '_id',
+          as: 'rubriqueDetails',
+        },
+      },
+      {
+        $unwind: '$rubriqueDetails',
+      },
+      {
+        $match: {
+          'rubriqueDetails.assujetiImpot': true,
+          'rubriqueDetails.entreBrut': true,
+        },
+      },
+      {
+        $group: {
+          _id: '$agent',
+          montant: { $sum: '$montant' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          rubrique: 'rubriqueDetails._id',
+          agent: '$_id',
+          totalMontant: 1,
+        },
+      },
+    ]);
+
     return result;
   }
 }
