@@ -32,6 +32,7 @@ import { AbsenceModule } from './absence/absence.module';
 import { CongeModule } from './conge/conge.module';
 import { AvancePretModule } from './avance-pret/avance-pret.module';
 import { SalaireModule } from './salaire/salaire.module';
+import { TenantAccountModule } from './tenant-account/tenant-account.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { SalaireModule } from './salaire/salaire.module';
     CongeModule,
     AvancePretModule,
     SalaireModule,
+    TenantAccountModule,
   ],
   controllers: [AppController],
   providers: [

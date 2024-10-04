@@ -19,13 +19,13 @@ export class AuthGuard implements CanActivate {
 
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException(`Failed auth`);
+      throw new UnauthorizedException(`failed_auth`);
     }
     let payload: { id: string; login: string };
     try {
       payload = await this.authService.decodeAuthToken(token);
     } catch (error) {
-      throw new UnauthorizedException(`Failed auth`);
+      throw new UnauthorizedException(`failed_auth`);
     }
     // check user existence
     const user = await this.usersService.findOne(payload.id, '-password');

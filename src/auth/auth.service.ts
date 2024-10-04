@@ -77,7 +77,7 @@ export class AuthService {
 
     const user = await this.usersService.findOneWithLogin(data.payload.login);
     //check user existence
-    if (!user) return new NotFoundException('User not found');
+    if (!user) return new NotFoundException('user_not_found');
     // check if the user already changed his password
     if (user.password)
       return new UnauthorizedException('User already set a password');

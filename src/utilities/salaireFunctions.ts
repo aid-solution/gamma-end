@@ -2,7 +2,6 @@ import { AgentRubriqueDocument } from 'src/schemas/users/agentRubrique.schema';
 import { FonctionRubriqueDocument } from 'src/schemas/users/fonctionRubrique.schema';
 import { ServiceRubriqueDocument } from 'src/schemas/users/serviceRubrique.schema';
 import { DirectionRubriqueDocument } from 'src/schemas/users/directionRubrique.schema';
-import { AvancePretDocument } from 'src/schemas/users/avancePret.schema';
 import {
   differenceBetweenDates,
   formatDate,
@@ -61,7 +60,7 @@ export const combineAllRubriqueAgent = (
   fonctionRubrique: FonctionRubriqueDocument[],
   serviceRubrique: ServiceRubriqueDocument[],
   directionRubrique: DirectionRubriqueDocument[],
-  avancePrets: AvancePretDocument[],
+  avancePrets: any[],
   charges: ChargeDocument[],
   agentAccount: AgentAccountDocument[],
   absences: AbsenceDocument[],
@@ -108,13 +107,11 @@ export const combineAllRubriqueAgent = (
       affectation.fonction.rattache === 'Service'
         ? serviceRubrique.filter(
             (sv) =>
-              sv.service.toString() ===
-              affectation.fonction.service._id.toString(),
+              sv.service.toString() === affectation.service._id.toString(),
           )
         : directionRubrique.filter(
             (dr) =>
-              dr.direction.toString() ===
-              affectation.fonction.direction._id.toString(),
+              dr.direction.toString() === affectation.direction._id.toString(),
           );
     const filterCharge = charges.filter(
       (charge) =>
@@ -196,13 +193,27 @@ export const combineAllRubriqueAgent = (
     );
 
     for (const rb of filterAvancePret) {
-      const item: Rubrique = {
-        _id: rb._id.toString(),
-        code: rb.rubrique.code,
-        libelle: rb.rubrique.libelle,
-        montant: rb.type === 'Avance' ? rb.montant : rb.montantEcheance,
-      };
-      retenues.push(item);
+      if (
+        !agentRubrique.find(
+          (affectation) => affectation.rubrique.code === +rb.rubrique.code,
+        )
+      ) {
+        const item: Rubrique = {
+          _id: rb._id.toString(),
+          code: rb.rubrique.code,
+          libelle: rb.rubrique.libelle,
+          montant: rb.type === 'Avance' ? rb.montant : rb.montantEcheance,
+        };
+        retenues.push(item);
+        const rubrique = {
+          montant: rb.type === 'Avance' ? rb.montant : rb.montantEcheance,
+          rubrique: rb.rubrique._id,
+          agent: affectation.agent._id,
+          dateDebut: debutMois,
+          dateFin: finMois,
+        } as unknown as AgentRubriqueDocument;
+        agentRubrique.push(rubrique);
+      }
     }
 
     let montantCotisation = 0;
@@ -374,17 +385,6 @@ export const combineAllRubriqueAgent = (
 
         agentRubrique.push(rubrique);
       }
-
-      /* if (affectation.agent.cotisation === 'FNR') {
-        montantCotisation = Math.floor(itemSalaire.montant * 0.06);
-        const item: Rubrique = {
-          _id: '201',
-          code: 201,
-          libelle: 'Conge, FNR',
-          montant: montantCotisation,
-        };
-        retenues.splice(2, 0, item);
-      } */
     }
 
     agentAllRubrique.push({
@@ -393,8 +393,154 @@ export const combineAllRubriqueAgent = (
       'nom-prenom': `${affectation.agent.nom} ${affectation.agent.prenom}`,
       section:
         affectation.fonction.rattache === 'Service'
-          ? affectation.fonction.service.libelle
-          : affectation.fonction.direction.libelle,
+          ? affectation.service.libelle
+          : affectation.direction.libelle,
+      emploi: affectation.fonction.libelle,
+      cotisation: affectation.agent.cotisation,
+      'num-cotisation': affectation.agent.cotisationNumero,
+      'cat-profession': affectation.grille.categorie.libelle,
+      'date-embauche': formatDate(affectation.agent.dateEmbauche),
+      charge: filterCharge.length,
+      absence: nombreJoursAbsence,
+      gains: gains.sort((a, b) =>
+        a.code.toString().localeCompare(b.code.toString()),
+      ),
+      retenues: retenues.sort((a, b) =>
+        a.code.toString().localeCompare(b.code.toString()),
+      ),
+      position: 'En activité',
+      'total-gains': sommeRubrique(gains),
+      'total-retenues': sommeRubrique(retenues),
+      brut: sommeRubrique(gains),
+      imposable: sommeRubrique(gains),
+      net: sommeRubrique(gains) - sommeRubrique(retenues),
+      'mode-paiement': affectation.agent.modePaiement,
+      banque: filterAccount[0].banque.libelle,
+      'num-compte': filterAccount[0].compte,
+    });
+  }
+  return agentAllRubrique;
+};
+
+export const combineAllRubrique = (
+  debutMois: Date,
+  finMois: Date,
+  affectations: any[],
+  agentRubrique: AgentRubriqueDocument[],
+  fonctionRubrique: FonctionRubriqueDocument[],
+  serviceRubrique: ServiceRubriqueDocument[],
+  directionRubrique: DirectionRubriqueDocument[],
+  charges: ChargeDocument[],
+  agentAccount: AgentAccountDocument[],
+  absences: AbsenceDocument[],
+  conges: CongeDocument[],
+) => {
+  const agentAllRubrique: any[] = [];
+  for (const affectation of affectations) {
+    const findConge = conges.find(
+      (cg) => cg.agent.toString() === affectation.agent._id.toString(),
+    );
+
+    const congeItem: { type: string; jours: number } = { type: '', jours: 0 };
+
+    if (findConge) {
+      const debut =
+        findConge.dateDebut.getTime() > debutMois.getTime()
+          ? findConge.dateDebut
+          : debutMois;
+      const fin =
+        findConge.dateFin.getTime() < finMois.getTime()
+          ? findConge.dateFin
+          : finMois;
+      const nombreJoursConge = differenceBetweenDates(debut, fin);
+      if (nombreJoursConge >= 30 && findConge.type === 'Sans solde') {
+        continue;
+      }
+      congeItem.jours = nombreJoursConge;
+      congeItem.type = findConge.type;
+    }
+
+    const filterAgentRubrique = agentRubrique.filter(
+      (ar) => ar.agent.toString() === affectation.agent._id.toString(),
+    );
+
+    const filterFonctionRubrique = fonctionRubrique.filter(
+      (fx) => fx.fonction.toString() === affectation.fonction._id.toString(),
+    );
+
+    const filterFonctionRubriqueRattache =
+      affectation.fonction.rattache === 'Service'
+        ? serviceRubrique.filter(
+            (sv) =>
+              sv.service.toString() === affectation.service._id.toString(),
+          )
+        : directionRubrique.filter(
+            (dr) =>
+              dr.direction.toString() === affectation.direction._id.toString(),
+          );
+
+    const filterAbsence = absences.filter(
+      (absence) =>
+        absence.agent.toString() === affectation.agent._id.toString(),
+    );
+
+    const nombreJoursAbsence =
+      congeItem.jours +
+      (filterAbsence.length === 0
+        ? 0
+        : totalJoursAbsence(filterAbsence, debutMois, finMois));
+    const gains: Rubrique[] = [];
+    const retenues: Rubrique[] = [];
+
+    gainsRetenues(gains, retenues, filterAgentRubrique, nombreJoursAbsence);
+    gainsRetenues(gains, retenues, filterFonctionRubrique, nombreJoursAbsence);
+    gainsRetenues(
+      gains,
+      retenues,
+      filterFonctionRubriqueRattache,
+      nombreJoursAbsence,
+    );
+    gainsRetenues(
+      gains,
+      retenues,
+      filterFonctionRubriqueRattache,
+      nombreJoursAbsence,
+    );
+
+    const filterCharge = charges.filter(
+      (charge) =>
+        charge.agent.toString() === affectation.agent._id.toString() &&
+        ((charge.type === 'Conjoint(e)' &&
+          !charge.assujetiCNSS) /* conjoint non salarié */ ||
+          (charge.type === 'Enfant' &&
+            (charge.handicap /* Enfant infirme célibataire, quel que soit son âge */ ||
+              (!charge.handicap &&
+                !charge.scolarite &&
+                differenceBetweenDates(
+                  new Date(charge.dateNaissance),
+                  new Date(),
+                ) <
+                  7670.25) /* Enfant mineur célibataire âgés de 21 ans au plus, 21 * 365.25 = 7670.25 */ ||
+              (charge.scolarite &&
+                differenceBetweenDates(
+                  new Date(charge.dateNaissance),
+                  new Date(),
+                ) <
+                  9131.25)))) /* Enfant célibataires âgés de 25 ans au plus, lorsqu’ils poursuivent leurs études, 25 * 365.25 = 9131.25 */,
+    );
+    const filterAccount = agentAccount.filter(
+      (account) =>
+        account.agent.toString() === affectation.agent._id.toString(),
+    );
+
+    agentAllRubrique.push({
+      _id: affectation.agent._id,
+      matricule: affectation.agent.matricule,
+      'nom-prenom': `${affectation.agent.nom} ${affectation.agent.prenom}`,
+      section:
+        affectation.fonction.rattache === 'Service'
+          ? affectation.service.libelle
+          : affectation.direction.libelle,
       emploi: affectation.fonction.libelle,
       cotisation: affectation.agent.cotisation,
       'num-cotisation': affectation.agent.cotisationNumero,
@@ -535,4 +681,38 @@ const montantPrimeAnciennete = (
     montantAnciennete = anciennete * primeAnciennete;
   else if (anciennete > 24) montantAnciennete = 24 * primeAnciennete;
   return montantAnciennete;
+};
+
+export const rubriqueCombineMontant = (
+  rubriques: any[],
+  newRubriques: any[],
+): Rubrique[] => {
+  const result: Rubrique[] = [];
+  for (const rubrique of rubriques) {
+    const findIndex = newRubriques.findIndex(
+      (item) => item.code === rubrique.code,
+    );
+    result.push({
+      _id: rubrique._id,
+      code: rubrique.code,
+      libelle: rubrique.libelle,
+      montant:
+        findIndex === -1
+          ? rubrique.montant
+          : rubrique.montant + newRubriques[findIndex].montant,
+    });
+  }
+  for (const rubrique of newRubriques) {
+    if (!result.find((res) => res.code === rubrique.code)) {
+      result.push({
+        _id: rubrique._id,
+        code: rubrique.code,
+        libelle: rubrique.libelle,
+        montant: rubrique.montant,
+      });
+    }
+  }
+  return result.sort((a, b) =>
+    a.code.toString().localeCompare(b.code.toString()),
+  );
 };

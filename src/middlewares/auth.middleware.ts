@@ -18,17 +18,17 @@ export class AuthMiddleware implements NestMiddleware {
   async use(request: Request, res: Response, next: NextFunction) {
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException('Failed auth');
+      throw new UnauthorizedException('failed_auth');
     }
     let payload: { id: string; login: string };
     try {
       payload = await this.authService.decodeAuthToken(token);
     } catch (error) {
-      throw new UnauthorizedException('Failed auth');
+      throw new UnauthorizedException('failed_auth');
     }
 
     const user = await this.usersService.findOne(payload.id);
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException('user_not_found');
 
     request['user'] = user;
     return next();

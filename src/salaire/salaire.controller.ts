@@ -9,6 +9,7 @@ import {
 import { SalaireService } from './salaire.service';
 import { SalaireDTO } from 'src/dto/salaire.dto';
 import { ConvertToOriginalTypePipe } from 'src/pipes/convertToOriginalType.pipe';
+import { ImprimeDTO } from 'src/dto/imprime.dto';
 
 @Controller('salaire')
 export class SalaireController {
@@ -23,6 +24,17 @@ export class SalaireController {
         +salaireDto.mois,
         +salaireDto.annee,
       );
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('An unknow exception raised');
+    }
+  }
+
+  @Post('/generate-document')
+  @HttpCode(201)
+  async generateDocument(@Body() document: ImprimeDTO) {
+    try {
+      return await this.salaireService.imprime(document);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException('An unknow exception raised');

@@ -18,11 +18,18 @@ import { AgentAccountService } from 'src/agent-account/agent-account.service';
 import { FonctionRubriqueService } from 'src/fonction-rubrique/fonction-rubrique.service';
 import { ServiceRubriqueService } from 'src/service-rubrique/service-rubrique.service';
 import { DirectionRubriqueService } from 'src/direction-rubrique/direction-rubrique.service';
-import { combineAllRubriqueAgent } from 'src/utilities/salaireFunctions';
+import {
+  combineAllRubriqueAgent,
+  combineAllRubrique,
+  rubriqueCombineMontant,
+} from 'src/utilities/salaireFunctions';
 import { ChargeService } from 'src/charge/charge.service';
 import { formatDate, getLastDayOfMonth } from 'src/utilities/formatDate';
 import { RubriqueService } from 'src/rubrique/rubrique.service';
 import { CreateAgentRubriqueDTO } from 'src/dto/createAgentRubrique.dto';
+import { ImprimeDTO } from 'src/dto/imprime.dto';
+
+type Periode = 'Mensuelle' | 'Trimestruelle' | 'Annuelle';
 
 @Injectable()
 export class SalaireService {
@@ -150,6 +157,120 @@ export class SalaireService {
     return {
       datas: agentAllRubrique,
       datePaie: formatDate(salary.datePaie),
+    };
+  }
+
+  async imprime(params: ImprimeDTO) {
+    const start: Record<Periode, number> = {
+      Mensuelle: +params.mois,
+      Trimestruelle:
+        params.mois === '1'
+          ? 1
+          : params.mois === '2'
+            ? 4
+            : params.mois === '3'
+              ? 7
+              : 10,
+      Annuelle: 1,
+    };
+    const end: Record<Periode, number> = {
+      Mensuelle: +params.mois,
+      Trimestruelle:
+        params.mois === '1'
+          ? 3
+          : params.mois === '2'
+            ? 6
+            : params.mois === '3'
+              ? 9
+              : 12,
+      Annuelle: 12,
+    };
+
+    const salaires = await (
+      await this.salaireModel
+    )
+      .find({
+        $and: [
+          {
+            mois: { $gte: start[params.periode], $lte: end[params.periode] },
+          },
+          { annee: +params.annee },
+        ],
+      })
+      .exec();
+    const agentsAllRubrique: any[] = [];
+
+    for (const salaire of salaires) {
+      const debutMois = new Date(
+        Date.UTC(salaire.annee, salaire.mois - 1, 1, 0, 0, 0),
+      );
+      const finMois = getLastDayOfMonth(debutMois);
+      const absences = await this.absenceService.findByPeriod(
+        debutMois,
+        finMois,
+      );
+      const conges = await this.congeService.findByPeriod(debutMois, finMois);
+
+      const affectations = await this.affectationService.findByPeriod(
+        debutMois,
+        finMois,
+      );
+
+      const agentRubriques = await this.agentRubriqueService.findByPeriod(
+        debutMois,
+        finMois,
+      );
+
+      const fonctionRubriques = await this.fonctionRubriqueService.findByPeriod(
+        debutMois,
+        finMois,
+      );
+      const serviceRubriques = await this.serviceRubriqueService.findByPeriod(
+        debutMois,
+        finMois,
+      );
+      const directionRubriques =
+        await this.directionRubriqueService.findByPeriod(debutMois, finMois);
+
+      const charges = await this.chargeService.findAll();
+      const agentAccount = await this.agentAccountService.findAll();
+
+      const results = combineAllRubrique(
+        debutMois,
+        finMois,
+        affectations,
+        agentRubriques,
+        fonctionRubriques,
+        serviceRubriques,
+        directionRubriques,
+        charges,
+        agentAccount,
+        absences,
+        conges,
+      );
+      for (const result of results) {
+        const findIndex = agentsAllRubrique.findIndex(
+          (agent) => agent.matricule === result.matricule,
+        );
+        if (findIndex !== -1) {
+          agentsAllRubrique[findIndex].brut += result.brut;
+          agentsAllRubrique[findIndex].imposable += result.imposable;
+          agentsAllRubrique[findIndex].net += result.net;
+          agentsAllRubrique[findIndex].gains = rubriqueCombineMontant(
+            agentsAllRubrique[findIndex].gains,
+            result.gains,
+          );
+          agentsAllRubrique[findIndex].retenues = rubriqueCombineMontant(
+            agentsAllRubrique[findIndex].retenues,
+            result.retenues,
+          );
+        } else agentsAllRubrique.push(result);
+      }
+    }
+
+    return {
+      datas: agentsAllRubrique,
+      datePaie: salaires[0] ? formatDate(salaires[0].datePaie) : '',
     };
   }
 }
