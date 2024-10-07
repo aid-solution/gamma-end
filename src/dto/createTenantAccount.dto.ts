@@ -12,5 +12,5 @@ export class CreateTenantAccountDTO {
 
   @IsString()
   @IsNotEmpty()
-  compte: string;
+  numero: string;
 }

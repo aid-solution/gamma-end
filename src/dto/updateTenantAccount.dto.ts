@@ -16,5 +16,5 @@ export class UpdateTenantAccountDTO {
 
   @IsString()
   @IsNotEmpty()
-  compte: string;
+  numero: string;
 }
