@@ -20,10 +20,7 @@ export class SalaireController {
   @UsePipes(ConvertToOriginalTypePipe)
   async findSalary(@Body() salaireDto: SalaireDTO) {
     try {
-      return await this.salaireService.find(
-        +salaireDto.mois,
-        +salaireDto.annee,
-      );
+      return await this.salaireService.find(salaireDto);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException('An unknow exception raised');

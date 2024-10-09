@@ -107,11 +107,13 @@ export const combineAllRubriqueAgent = (
       affectation.fonction.rattache === 'Service'
         ? serviceRubrique.filter(
             (sv) =>
-              sv.service.toString() === affectation.service._id.toString(),
+              sv.service.toString() ===
+              affectation.fonction.service._id.toString(),
           )
         : directionRubrique.filter(
             (dr) =>
-              dr.direction.toString() === affectation.direction._id.toString(),
+              dr.direction.toString() ===
+              affectation.fonction.direction._id.toString(),
           );
     const filterCharge = charges.filter(
       (charge) =>
@@ -393,8 +395,8 @@ export const combineAllRubriqueAgent = (
       'nom-prenom': `${affectation.agent.nom} ${affectation.agent.prenom}`,
       section:
         affectation.fonction.rattache === 'Service'
-          ? affectation.service.libelle
-          : affectation.direction.libelle,
+          ? affectation.fonction.service.libelle
+          : affectation.fonction.direction.libelle,
       emploi: affectation.fonction.libelle,
       cotisation: affectation.agent.cotisation,
       'num-cotisation': affectation.agent.cotisationNumero,
@@ -472,11 +474,13 @@ export const combineAllRubrique = (
       affectation.fonction.rattache === 'Service'
         ? serviceRubrique.filter(
             (sv) =>
-              sv.service.toString() === affectation.service._id.toString(),
+              sv.service.toString() ===
+              affectation.fonction.service._id.toString(),
           )
         : directionRubrique.filter(
             (dr) =>
-              dr.direction.toString() === affectation.direction._id.toString(),
+              dr.direction.toString() ===
+              affectation.fonction.direction._id.toString(),
           );
 
     const filterAbsence = absences.filter(
@@ -539,8 +543,8 @@ export const combineAllRubrique = (
       'nom-prenom': `${affectation.agent.nom} ${affectation.agent.prenom}`,
       section:
         affectation.fonction.rattache === 'Service'
-          ? affectation.service.libelle
-          : affectation.direction.libelle,
+          ? affectation.fonction.service.libelle
+          : affectation.fonction.direction.libelle,
       emploi: affectation.fonction.libelle,
       cotisation: affectation.agent.cotisation,
       'num-cotisation': affectation.agent.cotisationNumero,

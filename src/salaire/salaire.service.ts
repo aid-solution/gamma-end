@@ -28,6 +28,7 @@ import { formatDate, getLastDayOfMonth } from 'src/utilities/formatDate';
 import { RubriqueService } from 'src/rubrique/rubrique.service';
 import { CreateAgentRubriqueDTO } from 'src/dto/createAgentRubrique.dto';
 import { ImprimeDTO } from 'src/dto/imprime.dto';
+import { SalaireDTO } from 'src/dto/salaire.dto';
 
 type Periode = 'Mensuelle' | 'Trimestruelle' | 'Annuelle';
 
@@ -62,7 +63,9 @@ export class SalaireService {
     return await (await this.salaireModel).create(createSalaireDto);
   }
 
-  async find(mois: number, annee: number) {
+  async find(salaireDto: SalaireDTO) {
+    const mois = +salaireDto.mois;
+    const annee = +salaireDto.annee;
     const salaire = await (
       await this.salaireModel
     )
@@ -88,10 +91,20 @@ export class SalaireService {
 
     const conges = await this.congeService.findByPeriod(debutMois, finMois);
 
-    const affectations = await this.affectationService.findByPeriod(
+    const findAllAffection = await this.affectationService.findByPeriod(
       debutMois,
       finMois,
     );
+
+    const affectations = !salaireDto.service
+      ? findAllAffection
+      : findAllAffection.filter(
+          (affect) =>
+            (affect.fonction.service &&
+              affect.fonction.service.libelle === salaireDto.service) ||
+            (affect.fonction.direction &&
+              affect.fonction.direction.libelle === salaireDto.service),
+        );
 
     const agentRubriques = await this.agentRubriqueService.findByPeriod(
       debutMois,

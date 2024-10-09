@@ -183,102 +183,45 @@ export class AffectationService {
   ): Promise<AffectationDocument[]> {
     return await (
       await this.affectationModel
-    ).aggregate([
-      {
-        $match: {
-          $or: [
-            {
-              dateDebut: { $gte: debutMois },
-              dateFin: { $lte: finMois },
-            },
-            {
-              dateDebut: { $lte: debutMois },
-              dateFin: { $gte: finMois },
-            },
-            {
-              dateDebut: { $lt: debutMois },
-              dateFin: { $gte: debutMois },
-            },
-            {
-              dateDebut: { $lte: finMois, $gt: debutMois },
-              dateFin: { $exists: false },
-            },
-            {
-              dateDebut: { $lte: debutMois },
-              dateFin: { $exists: false },
-            },
-          ],
+    )
+      .find({
+        $or: [
+          {
+            dateDebut: { $gte: debutMois },
+            dateFin: { $lte: finMois },
+          },
+          {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $gte: finMois },
+          },
+          {
+            dateDebut: { $lt: debutMois },
+            dateFin: { $gte: debutMois },
+          },
+          {
+            dateDebut: { $lte: finMois, $gt: debutMois },
+            dateFin: { $exists: false },
+          },
+          {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $exists: false },
+          },
+        ],
+      })
+      .populate({ path: 'agent', model: await this.agentModel })
+      .populate({
+        path: 'fonction',
+        model: await this.fonctionModel,
+        populate: {
+          path: 'service',
+          model: await this.serviceModel,
+          populate: {
+            path: 'direction',
+            model: await this.directionModel,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'agents',
-          localField: 'agent',
-          foreignField: '_id',
-          as: 'agentDetails',
-        },
-      },
-      {
-        $lookup: {
-          from: 'fonctions',
-          localField: 'fonction',
-          foreignField: '_id',
-          as: 'fonctionDetails',
-        },
-      },
-      {
-        $lookup: {
-          from: 'grilles',
-          localField: 'grille',
-          foreignField: '_id',
-          as: 'grilleDetails',
-        },
-      },
-      {
-        $unwind: { path: '$agentDetails', preserveNullAndEmptyArrays: true },
-      },
-      {
-        $unwind: { path: '$fonctionDetails', preserveNullAndEmptyArrays: true },
-      },
-      {
-        $unwind: { path: '$grilleDetails', preserveNullAndEmptyArrays: true },
-      },
-      {
-        $lookup: {
-          from: 'services',
-          localField: 'fonctionDetails.service',
-          foreignField: '_id',
-          as: 'serviceDetails',
-        },
-      },
-      {
-        $lookup: {
-          from: 'directions',
-          localField: 'fonctionDetails.direction',
-          foreignField: '_id',
-          as: 'directionDetails',
-        },
-      },
-      {
-        $unwind: { path: '$serviceDetails', preserveNullAndEmptyArrays: true },
-      },
-      {
-        $unwind: {
-          path: '$directionDetails',
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $group: {
-          _id: '$agent',
-          agent: { $first: '$agentDetails' },
-          fonction: { $first: '$fonctionDetails' },
-          grille: { $first: '$grilleDetails' },
-          service: { $first: '$serviceDetails' },
-          direction: { $first: '$directionDetails' },
-        },
-      },
-    ]);
+      })
+      .populate({ path: 'grille', model: await this.grilleModel });
   }
 
   async update(
