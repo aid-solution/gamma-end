@@ -3,16 +3,17 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Agent } from './agent.schema';
 import { HydratedDocument } from 'mongoose';
 import { Salaire } from './salaire.schema';
+import { MotifAbsence } from './motifAbsence.schema';
 
 export type AbsenceDocument = HydratedDocument<Absence>;
 
 @Schema()
 export class Absence {
   @Prop({
-    required: true,
-    trim: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Agent',
   })
-  motif: string;
+  motif: MotifAbsence;
 
   @Prop({
     required: true,
@@ -35,12 +36,6 @@ export class Absence {
     trim: true,
   })
   type: string;
-
-  @Prop({
-    required: true,
-    trim: true,
-  })
-  nature: string;
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,

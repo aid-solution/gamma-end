@@ -33,8 +33,4 @@ export class CreateAbsenceDTO {
   @IsOptional()
   @IsEnum(['Exceptionnelle', 'Non Exceptionnelle'])
   type: string;
-
-  @IsString()
-  @IsOptional()
-  nature: string;
 }

@@ -29,8 +29,4 @@ export class AbsenceDTO {
   @IsString()
   @IsEnum(['Exceptionnelle', 'Non Exceptionnelle'])
   type: string;
-
-  @IsString()
-  @IsNotEmpty()
-  nature: string;
 }

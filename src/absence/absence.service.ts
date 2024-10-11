@@ -12,6 +12,10 @@ import { CreateAbsenceDTO } from 'src/dto/createAbsence.dto';
 import { differenceBetweenDates, formatDate } from 'src/utilities/formatDate';
 import { UpdateAbsenceDTO } from 'src/dto/updateAbsence.dto';
 import { AgentDocument, AgentSchema } from 'src/schemas/users/agent.schema';
+import {
+  MotifAbsenceDocument,
+  MotifAbsenceSchema,
+} from 'src/schemas/users/motifAbsence.schema';
 
 @Injectable()
 export class AbsenceService {
@@ -36,20 +40,59 @@ export class AbsenceService {
     AgentSchema,
   );
 
+  private readonly motifAbsenceModel =
+    this.useModel.createModel<MotifAbsenceDocument>(
+      this.tenantName,
+      'MotifAbsence',
+      MotifAbsenceSchema,
+    );
+
   async create(absenceDto: CreateAbsenceDTO) {
+    const annee = +absenceDto.dateDebut.split('-')[0];
+    const startYear = new Date(Date.UTC(annee, 0, 1, 0, 0, 0));
+    const endYear = new Date(Date.UTC(annee, 11, 31, 0, 0, 0));
+    const findAllAbsence: any[] = await (
+      await this.absenceModel
+    )
+      .find({
+        agent: absenceDto.agent,
+        dateDebut: { $gte: startYear, $lte: endYear },
+      })
+      .exec();
+    let totalJours: number = 0;
+    for (const absence of findAllAbsence) {
+      if (absenceDto.type === absence.type) {
+        totalJours += differenceBetweenDates(
+          absence.dateDebut,
+          absence.dateFin,
+        );
+      }
+    }
+    const jours =
+      totalJours +
+      differenceBetweenDates(
+        new Date(absenceDto.dateDebut),
+        new Date(absenceDto.dateFin),
+      );
+    if (absenceDto.type === 'Exceptionnelle' && jours > 10) {
+      return '';
+    }
     return await (await this.absenceModel).create(absenceDto);
   }
 
   async findAll() {
-    const absences: any[] = await (await this.absenceModel)
+    const absences: any[] = await (
+      await this.absenceModel
+    )
       .find({})
+      .populate({ path: 'motif', model: await this.motifAbsenceModel })
       .populate({ path: 'agent', model: await this.agentModel });
     const result: any[] = [];
     absences.map((absence) => {
       const data = {
         matricule: absence.agent.matricule,
         nomPrenom: `${absence.agent.nom} ${absence.agent.prenom}`,
-        motif: absence.motif,
+        motif: absence.motif.libelle,
         periode: `${formatDate(absence.dateDebut)} - ${formatDate(absence.dateFin)}`,
         jours: differenceBetweenDates(absence.dateDebut, absence.dateFin),
         deduction: absence.deduction ? 'Oui' : 'Non',
@@ -64,12 +107,12 @@ export class AbsenceService {
   }
 
   async findOne(id: string): Promise<AbsenceDocument> {
-    const absence: AbsenceDocument = await (
-      await this.absenceModel
-    ).findById(id);
+    const absence: any = await (await this.absenceModel)
+      .findById(id)
+      .populate({ path: 'motif', model: await this.motifAbsenceModel });
     const data = {
       agent: absence.agent,
-      motif: absence.motif,
+      motif: absence.motif.libelle,
       dateDebut: formatDate(absence.dateDebut, '/'),
       dateFin: formatDate(absence.dateFin, '/'),
       type: absence.type,
@@ -130,7 +173,6 @@ export class AbsenceService {
         dateFin: formatDate(absence.dateFin),
         jours: differenceBetweenDates(absence.dateDebut, absence.dateFin),
         type: absence.type,
-        nature: absence.nature,
         deduction: absence.deduction ? 'Oui' : 'Non',
         _id: absence._id,
       } as unknown as AbsenceDocument;
