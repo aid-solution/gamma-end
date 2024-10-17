@@ -131,31 +131,36 @@ export class AbsenceService {
     return await (
       await this.absenceModel
     ).find({
-      $or: [
-        // Document entièrement dans le mois
+      $and: [
+        { deduction: true },
         {
-          dateDebut: { $gte: debutMois },
-          dateFin: { $lte: finMois },
-        },
-        // Document englobe le mois
-        {
-          dateDebut: { $lte: debutMois },
-          dateFin: { $gte: finMois },
-        },
-        // Document commence avant et finit dans le mois
-        {
-          dateDebut: { $lt: debutMois },
-          dateFin: { $gte: debutMois },
-        },
-        // Document commence pendant le mois et n'a pas de dateFin
-        {
-          dateDebut: { $lte: finMois, $gt: debutMois },
-          dateFin: { $exists: false },
-        },
-        // Document actif avant le mois sans dateFin
-        {
-          dateDebut: { $lte: debutMois },
-          dateFin: { $exists: false },
+          $or: [
+            // Document entièrement dans le mois
+            {
+              dateDebut: { $gte: debutMois },
+              dateFin: { $lte: finMois },
+            },
+            // Document englobe le mois
+            {
+              dateDebut: { $lte: debutMois },
+              dateFin: { $gte: finMois },
+            },
+            // Document commence avant et finit dans le mois
+            {
+              dateDebut: { $lt: debutMois },
+              dateFin: { $gte: debutMois },
+            },
+            // Document commence pendant le mois et n'a pas de dateFin
+            {
+              dateDebut: { $lte: finMois, $gt: debutMois },
+              dateFin: { $exists: false },
+            },
+            // Document actif avant le mois sans dateFin
+            {
+              dateDebut: { $lte: debutMois },
+              dateFin: { $exists: false },
+            },
+          ],
         },
       ],
     });
