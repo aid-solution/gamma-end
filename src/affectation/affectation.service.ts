@@ -221,7 +221,14 @@ export class AffectationService {
           },
         },
       })
-      .populate({ path: 'grille', model: await this.grilleModel });
+      .populate({
+        path: 'grille',
+        model: await this.grilleModel,
+        populate: {
+          path: 'categorie',
+          model: await this.categorieModel,
+        },
+      });
   }
 
   async update(
