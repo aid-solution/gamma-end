@@ -23,7 +23,7 @@ export class SalaireController {
       return await this.salaireService.find(salaireDto);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException('An unknow exception raised');
     }
   }
 
@@ -34,7 +34,7 @@ export class SalaireController {
       return await this.salaireService.imprime(document);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException('An unknow exception raised');
     }
   }
 }
