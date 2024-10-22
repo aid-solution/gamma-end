@@ -89,12 +89,24 @@ export class CongeService {
           dateFin: { $gte: finMois },
         },
         {
-          dateDebut: { $gte: debutMois },
-          dateFin: { $gte: finMois },
+          dateDebut: { $lte: debutMois },
+          dateFin: { $gte: debutMois },
         },
         {
           dateDebut: { $lte: debutMois },
-          dateFin: { $gte: finMois },
+          dateFin: { $lte: debutMois },
+        },
+        {
+          dateDebut: { $lte: finMois, $gte: debutMois },
+          dateFin: { $gte: debutMois },
+        },
+        {
+          dateDebut: { $lte: finMois, $gte: debutMois },
+          dateFin: { $exists: false },
+        },
+        {
+          dateDebut: { $lte: debutMois },
+          dateFin: { $exists: false },
         },
       ],
     });

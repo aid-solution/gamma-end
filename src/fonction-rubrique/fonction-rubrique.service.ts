@@ -97,6 +97,10 @@ export class FonctionRubriqueService {
             dateFin: { $gte: debutMois },
           },
           {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $lte: debutMois },
+          },
+          {
             dateDebut: { $lte: finMois, $gte: debutMois },
             dateFin: { $gte: debutMois },
           },
