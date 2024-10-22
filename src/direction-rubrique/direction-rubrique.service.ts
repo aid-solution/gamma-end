@@ -106,11 +106,15 @@ export class DirectionRubriqueService {
             dateFin: { $gte: finMois },
           },
           {
-            dateDebut: { $lt: debutMois },
+            dateDebut: { $lte: debutMois },
             dateFin: { $gte: debutMois },
           },
           {
-            dateDebut: { $lte: finMois, $gt: debutMois },
+            dateDebut: { $lte: finMois, $gte: debutMois },
+            dateFin: { $gte: debutMois },
+          },
+          {
+            dateDebut: { $lte: finMois, $gte: debutMois },
             dateFin: { $exists: false },
           },
           {

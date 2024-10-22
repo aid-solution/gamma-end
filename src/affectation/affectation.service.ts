@@ -185,26 +185,40 @@ export class AffectationService {
       await this.affectationModel
     )
       .find({
-        $or: [
+        $and: [
           {
-            dateDebut: { $gte: debutMois },
-            dateFin: { $lte: finMois },
+            statut: {
+              $regex: /\b(Avancement|Promotion|Recrutement)\b/,
+              $options: 'i',
+            },
           },
           {
-            dateDebut: { $lte: debutMois },
-            dateFin: { $gte: finMois },
-          },
-          {
-            dateDebut: { $lt: debutMois },
-            dateFin: { $gte: debutMois },
-          },
-          {
-            dateDebut: { $lte: finMois, $gt: debutMois },
-            dateFin: { $exists: false },
-          },
-          {
-            dateDebut: { $lte: debutMois },
-            dateFin: { $exists: false },
+            $or: [
+              {
+                dateDebut: { $gte: debutMois },
+                dateFin: { $lte: finMois },
+              },
+              {
+                dateDebut: { $lte: debutMois },
+                dateFin: { $gte: finMois },
+              },
+              {
+                dateDebut: { $lte: debutMois },
+                dateFin: { $gte: debutMois },
+              },
+              {
+                dateDebut: { $lte: finMois, $gte: debutMois },
+                dateFin: { $gte: debutMois },
+              },
+              {
+                dateDebut: { $lte: finMois, $gte: debutMois },
+                dateFin: { $exists: false },
+              },
+              {
+                dateDebut: { $lte: debutMois },
+                dateFin: { $exists: false },
+              },
+            ],
           },
         ],
       })

@@ -113,27 +113,26 @@ export class AvancePretService {
     )
       .find({
         $or: [
-          // Document entièrement dans le mois
           {
             dateDebut: { $gte: debutMois },
             dateFin: { $lte: finMois },
           },
-          // Document englobe le mois
           {
             dateDebut: { $lte: debutMois },
             dateFin: { $gte: finMois },
           },
-          // Document commence avant et finit dans le mois
           {
-            dateDebut: { $lt: debutMois },
+            dateDebut: { $lte: debutMois },
             dateFin: { $gte: debutMois },
           },
-          // Document commence pendant le mois et n'a pas de dateFin
           {
-            dateDebut: { $lte: finMois, $gt: debutMois },
+            dateDebut: { $lte: finMois, $gte: debutMois },
+            dateFin: { $gte: debutMois },
+          },
+          {
+            dateDebut: { $lte: finMois, $gte: debutMois },
             dateFin: { $exists: false },
           },
-          // Document actif avant le mois sans dateFin
           {
             dateDebut: { $lte: debutMois },
             dateFin: { $exists: false },
