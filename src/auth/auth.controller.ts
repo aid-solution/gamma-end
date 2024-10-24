@@ -40,7 +40,7 @@ export class AuthController {
       //check password matching
       const isPasswordMatch = await compare(signInDto.password, user.password);
       if (!isPasswordMatch)
-        throw new UnauthorizedException(`Incorrect password`);
+        throw new UnauthorizedException(`incorrect_password`);
       const token = await this.authService.generateAccessToken(user);
       return response.send({ success: true, token });
     } catch (error) {

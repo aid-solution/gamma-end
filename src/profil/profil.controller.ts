@@ -8,21 +8,21 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDTO } from 'src/dto/createUser.dto';
-import { UserDTO } from 'src/dto/user.dto';
+import { CreateProfilDTO } from 'src/dto/createProfil.dto';
+import { ProfilDTO } from 'src/dto/profil.dto';
+import { ProfilService } from './profil.service';
 
-@Controller('users')
-export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+@Controller('profil')
+export class ProfilController {
+  constructor(private readonly profilService: ProfilService) {}
 
   @Post()
   @HttpCode(201)
-  async create(@Body() userDto: UserDTO) {
-    delete userDto._id;
-    const createUserDto = userDto as unknown as CreateUserDTO;
+  async create(@Body() profilDto: ProfilDTO) {
+    delete profilDto._id;
+    const createProfilDto = profilDto as unknown as CreateProfilDTO;
     try {
-      return await this.usersService.create(createUserDto);
+      return await this.profilService.create(createProfilDto);
     } catch (error) {
       throw new InternalServerErrorException('An unknow exception raised');
     }
@@ -31,7 +31,7 @@ export class UsersController {
   @Get()
   async findAll() {
     try {
-      return await this.usersService.findAll();
+      return await this.profilService.findAll();
     } catch (error) {
       throw new InternalServerErrorException('An unknow exception raised');
     }
@@ -40,7 +40,7 @@ export class UsersController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
-      return await this.usersService.findUser(id);
+      return await this.profilService.findOne(id);
     } catch (error) {
       throw new InternalServerErrorException('An unknow exception raised');
     }
@@ -49,18 +49,18 @@ export class UsersController {
   @Get('/duplicate/:search')
   async researchDuplicate(@Param('search') search: string) {
     try {
-      return await this.usersService.findOneWithLogin(search);
+      return await this.profilService.researchDuplicate(search);
     } catch (error) {
       throw new InternalServerErrorException('An unknow exception raised');
     }
   }
 
   @Patch()
-  async updateUser(@Body() userDto: UserDTO) {
-    const { _id, ...user } = userDto;
-    const createUserDto = user as unknown as CreateUserDTO;
+  async updateProfil(@Body() ProfilDto: ProfilDTO) {
+    const { _id, ...profil } = ProfilDto;
+    const createProfilDto = profil as unknown as CreateProfilDTO;
     try {
-      return await this.usersService.update(_id, createUserDto);
+      return await this.profilService.update(_id, createProfilDto);
     } catch (error) {
       throw new InternalServerErrorException('An unknow exception raised');
     }

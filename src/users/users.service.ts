@@ -7,6 +7,8 @@ import { ManagerDbService } from 'src/providers/managerDb.service';
 import { getTenantName } from 'src/utilities/getTenantName';
 import { AgentDocument, AgentSchema } from 'src/schemas/users/agent.schema';
 import { ProfilDocument, ProfilSchema } from 'src/schemas/users/profil.schema';
+import { CreateUserDTO } from 'src/dto/createUser.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -37,8 +39,18 @@ export class UsersService {
     ProfilSchema,
   );
 
+  async create(createUserDto: CreateUserDTO) {
+    const saltRound = bcrypt.genSaltSync();
+    const hashedPassword = await bcrypt.hash(createUserDto.password, saltRound);
+    createUserDto.password = hashedPassword;
+    return await (await this.userModel).create(createUserDto);
+  }
+
   async findOne(id: string, select?: string) {
-    return (await this.userModel).findById(id).select(select);
+    return (await this.userModel)
+      .findById(id)
+      .populate({ path: 'profil', model: await this.profilModel })
+      .select(select);
   }
 
   async findOneWithLogin(login: string): Promise<UserDocument> {
@@ -51,9 +63,29 @@ export class UsersService {
     return await (
       await this.userModel
     )
-      .find()
+      .find({ login: { $ne: 'user' } })
+      .select('-password')
       .populate({ path: 'agent', model: await this.agentModel })
       .populate({ path: 'profil', model: await this.profilModel })
       .lean();
+  }
+
+  async findUser(id: string) {
+    return await (
+      await this.userModel
+    )
+      .findById(id)
+      .populate({ path: 'agent', model: await this.agentModel })
+      .populate({ path: 'profil', model: await this.profilModel })
+      .lean();
+  }
+
+  async update(
+    id: string,
+    updateUserDto: CreateUserDTO,
+  ): Promise<ProfilDocument> {
+    return await (await this.profilModel)
+      .findByIdAndUpdate(id, updateUserDto, { new: true })
+      .exec();
   }
 }

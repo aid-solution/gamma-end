@@ -115,7 +115,9 @@ export class TenantService {
       {
         box: 'group',
         name: 'Utilisateurs',
-        average: await (await this.userModel).countDocuments(),
+        average: await (
+          await this.userModel
+        ).countDocuments({ login: { $ne: 'user' } }),
       },
       {
         box: 'grid',
