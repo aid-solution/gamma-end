@@ -23,7 +23,7 @@ export class MotifAbsenceController {
     try {
       return await this.motifAbsenceService.create(motif);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -32,7 +32,7 @@ export class MotifAbsenceController {
     try {
       return await this.motifAbsenceService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -41,7 +41,7 @@ export class MotifAbsenceController {
     try {
       return await this.motifAbsenceService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -50,7 +50,7 @@ export class MotifAbsenceController {
     try {
       return await this.motifAbsenceService.researchDuplicate(search);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -60,7 +60,7 @@ export class MotifAbsenceController {
     try {
       return await this.motifAbsenceService.update(_id, motif);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

@@ -14,6 +14,7 @@ import { AbsenceDTO } from 'src/dto/absence.dto';
 import { CreateAbsenceDTO } from 'src/dto/createAbsence.dto';
 import { ConvertToOriginalTypePipe } from 'src/pipes/convertToOriginalType.pipe';
 import { UpdateAbsenceDTO } from 'src/dto/updateAbsence.dto';
+import { differenceBetweenDates } from 'src/utilities/formatDate';
 
 @Controller('absence')
 export class AbsenceController {
@@ -25,11 +26,38 @@ export class AbsenceController {
   async createAbsence(@Body() absenceDto: AbsenceDTO) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, ...rest } = absenceDto;
+    const annee = +absenceDto.dateDebut.split('-')[0];
+    const startYear = new Date(Date.UTC(annee, 0, 1, 0, 0, 0));
+    const endYear = new Date(Date.UTC(annee, 11, 31, 0, 0, 0));
+    const findAllAbsence =
+      await this.absenceService.findAllAbsencesExptionnelle(
+        absenceDto.agent,
+        startYear,
+        endYear,
+      );
+    let totalJours: number = 0;
+    for (const absence of findAllAbsence) {
+      if (absenceDto.type === absence.type) {
+        totalJours += differenceBetweenDates(
+          absence.dateDebut,
+          absence.dateFin,
+        );
+      }
+    }
+    const jours =
+      totalJours +
+      differenceBetweenDates(
+        new Date(absenceDto.dateDebut),
+        new Date(absenceDto.dateFin),
+      );
+    if (absenceDto.type === 'Exceptionnelle' && jours > 10) {
+      throw new InternalServerErrorException('exceeding_number_days');
+    }
     const createAbsenceDto = rest as unknown as CreateAbsenceDTO;
     try {
       return await this.absenceService.create(createAbsenceDto);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -38,7 +66,7 @@ export class AbsenceController {
     try {
       return await this.absenceService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -47,7 +75,7 @@ export class AbsenceController {
     try {
       return await this.absenceService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -56,7 +84,7 @@ export class AbsenceController {
     try {
       return await this.absenceService.filterByAgent(agent);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -69,7 +97,7 @@ export class AbsenceController {
       );
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

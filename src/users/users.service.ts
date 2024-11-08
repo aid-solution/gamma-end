@@ -47,10 +47,26 @@ export class UsersService {
   }
 
   async findOne(id: string, select?: string) {
-    return (await this.userModel)
+    const result: any = await (
+      await this.userModel
+    )
       .findById(id)
       .populate({ path: 'profil', model: await this.profilModel })
+      .populate({ path: 'agent', model: await this.agentModel })
       .select(select);
+
+    const user = {
+      _id: result._id,
+      login: result.login,
+      statut: result.statut,
+      agent: {
+        nom: result.agent ? result.agent.nom : 'Super',
+        prenom: result.agent ? result.agent.prenom : 'Admin',
+      },
+      profil: result.profil,
+    } as unknown as UserDocument;
+
+    return user;
   }
 
   async findOneWithLogin(login: string): Promise<UserDocument> {

@@ -28,7 +28,7 @@ export class GrilleController {
     try {
       return await this.grilleService.create(createGrilleDto);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -37,7 +37,7 @@ export class GrilleController {
     try {
       return await this.grilleService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -46,7 +46,7 @@ export class GrilleController {
     try {
       return await this.grilleService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -55,7 +55,7 @@ export class GrilleController {
     try {
       return await this.grilleService.researchDuplicate(search);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -67,7 +67,7 @@ export class GrilleController {
     try {
       return await this.grilleService.update(_id, createGrilleDto);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

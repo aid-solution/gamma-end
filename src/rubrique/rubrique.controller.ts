@@ -28,7 +28,7 @@ export class RubriqueController {
     try {
       return await this.rubriqueService.create(createRubriqueDto);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -37,7 +37,7 @@ export class RubriqueController {
     try {
       return await this.rubriqueService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
   @Get('avance-pret')
@@ -45,7 +45,7 @@ export class RubriqueController {
     try {
       return await this.rubriqueService.findAllAvancePret();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -54,7 +54,7 @@ export class RubriqueController {
     try {
       return await this.rubriqueService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -63,7 +63,7 @@ export class RubriqueController {
     try {
       return await this.rubriqueService.researchDuplicate(search);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -75,7 +75,7 @@ export class RubriqueController {
     try {
       return await this.rubriqueService.update(_id, createRubriqueDto);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

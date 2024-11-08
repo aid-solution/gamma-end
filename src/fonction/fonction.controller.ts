@@ -24,7 +24,7 @@ export class FonctionController {
       return await this.fonctionService.create(fonction as FonctionDTO);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -33,7 +33,7 @@ export class FonctionController {
     try {
       return await this.fonctionService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -42,7 +42,7 @@ export class FonctionController {
     try {
       return await this.fonctionService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -51,7 +51,7 @@ export class FonctionController {
     try {
       return await this.fonctionService.researchDuplicate(search);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -63,7 +63,7 @@ export class FonctionController {
       return await this.fonctionService.update(_id, createFonctionDto);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

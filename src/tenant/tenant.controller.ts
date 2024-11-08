@@ -18,7 +18,7 @@ export class TenantController {
     try {
       return await this.tenantService.findOne(subdomain);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -28,7 +28,7 @@ export class TenantController {
       const { _id, ...updateDto } = updateTenant;
       return await this.tenantService.update(_id, updateDto as CreateTenantDTO);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

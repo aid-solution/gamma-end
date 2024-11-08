@@ -147,7 +147,7 @@ export class AgentRubriqueController {
       );
       return result;
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -170,7 +170,7 @@ export class AgentRubriqueController {
       if (update.length > 0) await this.agentRubriqueService.update(update);
       return await this.agentRubriqueService.create(create);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

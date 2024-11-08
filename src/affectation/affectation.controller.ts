@@ -94,7 +94,7 @@ export class AffectationController {
       return await this.affectationService.create(datas);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -105,7 +105,7 @@ export class AffectationController {
       return this.listAffectations(affectations);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -115,7 +115,7 @@ export class AffectationController {
       return await this.affectationService.findOne(id);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -142,7 +142,7 @@ export class AffectationController {
       return await this.affectationService.update(datas);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -152,7 +152,7 @@ export class AffectationController {
       return await this.affectationService.filterByAgent(agent);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

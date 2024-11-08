@@ -29,7 +29,7 @@ export class AvancePretController {
     try {
       return await this.avancePretService.create(createAvancePretDto);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -39,7 +39,7 @@ export class AvancePretController {
       return await this.avancePretService.findAll();
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -48,7 +48,7 @@ export class AvancePretController {
     try {
       return await this.avancePretService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -61,7 +61,7 @@ export class AvancePretController {
       );
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

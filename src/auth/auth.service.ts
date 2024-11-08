@@ -72,8 +72,7 @@ export class AuthService {
 
   async firstChangePassword(changePasswordDto: ChangePasswordDTO) {
     const data = await this.checkValidation(changePasswordDto.token);
-    if (!data.success)
-      return new UnauthorizedException('The token is not valid');
+    if (!data.success) return new UnauthorizedException('token_is_not_valid');
 
     const user = await this.usersService.findOneWithLogin(data.payload.login);
     //check user existence

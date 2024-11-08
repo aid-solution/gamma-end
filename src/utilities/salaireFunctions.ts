@@ -417,8 +417,8 @@ export const combineAllRubriqueAgent = (
       imposable: sommeRubrique(gains),
       net: sommeRubrique(gains) - sommeRubrique(retenues),
       'mode-paiement': affectation.agent.modePaiement,
-      banque: filterAccount[0].banque.libelle,
-      'num-compte': filterAccount[0].compte,
+      banque: filterAccount[0] ? filterAccount[0].banque.libelle : 'Caisse',
+      'num-compte': filterAccount[0] ? filterAccount[0].compte : '',
     });
   }
   return agentAllRubrique;

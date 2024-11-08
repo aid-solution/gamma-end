@@ -17,7 +17,7 @@ export class DirectionRubriqueController {
     try {
       return await this.directionRubriqueService.findAllByDirection(direction);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

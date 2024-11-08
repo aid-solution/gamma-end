@@ -23,7 +23,7 @@ export class EchellonController {
     try {
       return await this.echellonService.create(echellon);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -32,7 +32,7 @@ export class EchellonController {
     try {
       return await this.echellonService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -41,7 +41,7 @@ export class EchellonController {
     try {
       return await this.echellonService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -50,7 +50,7 @@ export class EchellonController {
     try {
       return await this.echellonService.researchDuplicate(search);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -60,7 +60,7 @@ export class EchellonController {
     try {
       return await this.echellonService.update(_id, echellon);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

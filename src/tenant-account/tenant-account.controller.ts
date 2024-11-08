@@ -27,7 +27,7 @@ export class TeanantAccountController {
       return await this.tenantAccountService.create(createAbsenceDto);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -36,7 +36,7 @@ export class TeanantAccountController {
     try {
       return await this.tenantAccountService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -45,7 +45,7 @@ export class TeanantAccountController {
     try {
       return await this.tenantAccountService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -57,7 +57,7 @@ export class TeanantAccountController {
       );
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

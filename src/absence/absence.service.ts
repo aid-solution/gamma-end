@@ -48,36 +48,23 @@ export class AbsenceService {
     );
 
   async create(absenceDto: CreateAbsenceDTO) {
-    const annee = +absenceDto.dateDebut.split('-')[0];
-    const startYear = new Date(Date.UTC(annee, 0, 1, 0, 0, 0));
-    const endYear = new Date(Date.UTC(annee, 11, 31, 0, 0, 0));
-    const findAllAbsence: any[] = await (
+    return await (await this.absenceModel).create(absenceDto);
+  }
+
+  async findAllAbsencesExptionnelle(
+    agent: string,
+    startYear: Date,
+    endYear: Date,
+  ): Promise<any[]> {
+    return await (
       await this.absenceModel
     )
       .find({
-        agent: absenceDto.agent,
+        agent: agent,
         dateDebut: { $gte: startYear, $lte: endYear },
+        type: 'Exceptionnelle',
       })
       .exec();
-    let totalJours: number = 0;
-    for (const absence of findAllAbsence) {
-      if (absenceDto.type === absence.type) {
-        totalJours += differenceBetweenDates(
-          absence.dateDebut,
-          absence.dateFin,
-        );
-      }
-    }
-    const jours =
-      totalJours +
-      differenceBetweenDates(
-        new Date(absenceDto.dateDebut),
-        new Date(absenceDto.dateFin),
-      );
-    if (absenceDto.type === 'Exceptionnelle' && jours > 10) {
-      return '';
-    }
-    return await (await this.absenceModel).create(absenceDto);
   }
 
   async findAll() {
@@ -133,6 +120,7 @@ export class AbsenceService {
     ).find({
       $and: [
         { deduction: true },
+        { type: 'Non Exceptionnelle' },
         {
           $or: [
             {
@@ -170,13 +158,13 @@ export class AbsenceService {
   }
 
   async filterByAgent(agent: string): Promise<AbsenceDocument[]> {
-    const absences: AbsenceDocument[] = await (
-      await this.absenceModel
-    ).find({ agent });
+    const absences: any[] = await (await this.absenceModel)
+      .find({ agent })
+      .populate({ path: 'motif', model: await this.motifAbsenceModel });
     const listAbsence: AbsenceDocument[] = [];
     absences.map((absence) => {
       const data = {
-        motif: absence.motif,
+        motif: absence.motif.libelle,
         dateDebut: formatDate(absence.dateDebut),
         dateFin: formatDate(absence.dateFin),
         jours: differenceBetweenDates(absence.dateDebut, absence.dateFin),

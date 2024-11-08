@@ -29,7 +29,7 @@ export class AuthGuard implements CanActivate {
     }
     // check user existence
     const user = await this.usersService.findOne(payload.id, '-password');
-    if (!user) throw new NotFoundException(`User not found`);
+    if (!user) throw new NotFoundException(`user_not_found`);
 
     request['user'] = user;
     return true;

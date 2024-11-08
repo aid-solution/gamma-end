@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   InternalServerErrorException,
+  Param,
   Post,
   UsePipes,
 } from '@nestjs/common';
@@ -15,15 +17,43 @@ import { ImprimeDTO } from 'src/dto/imprime.dto';
 export class SalaireController {
   constructor(private readonly salaireService: SalaireService) {}
 
-  @Post()
-  @HttpCode(201)
-  @UsePipes(ConvertToOriginalTypePipe)
-  async findSalary(@Body() salaireDto: SalaireDTO) {
+  @Get('/last-salary')
+  async findLast() {
     try {
-      return await this.salaireService.find(salaireDto);
+      return await this.salaireService.findLast();
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
+    }
+  }
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    try {
+      return await this.salaireService.findOne(id);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('an_unknow_exception_raised');
+    }
+  }
+  @Get()
+  async findAll() {
+    try {
+      return await this.salaireService.findAll();
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('an_unknow_exception_raised');
+    }
+  }
+
+  @Post('/calcul-salaire')
+  @HttpCode(201)
+  @UsePipes(ConvertToOriginalTypePipe)
+  async CalculSalaire(@Body() salaireDto: SalaireDTO) {
+    try {
+      return await this.salaireService.CalculSalaire(salaireDto);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -31,10 +61,10 @@ export class SalaireController {
   @HttpCode(201)
   async generateDocument(@Body() document: ImprimeDTO) {
     try {
-      return await this.salaireService.imprime(document);
+      return await this.salaireService.generateDocument(document);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

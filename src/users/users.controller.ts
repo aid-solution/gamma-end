@@ -24,7 +24,7 @@ export class UsersController {
     try {
       return await this.usersService.create(createUserDto);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -33,7 +33,7 @@ export class UsersController {
     try {
       return await this.usersService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -42,7 +42,7 @@ export class UsersController {
     try {
       return await this.usersService.findUser(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -51,7 +51,7 @@ export class UsersController {
     try {
       return await this.usersService.findOneWithLogin(search);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -62,7 +62,7 @@ export class UsersController {
     try {
       return await this.usersService.update(_id, createUserDto);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

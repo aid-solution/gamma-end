@@ -24,7 +24,7 @@ export class ServiceController {
       return await this.serviceService.create(service as ServiceDTO);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -33,7 +33,7 @@ export class ServiceController {
     try {
       return await this.serviceService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -42,7 +42,7 @@ export class ServiceController {
     try {
       return await this.serviceService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -51,7 +51,7 @@ export class ServiceController {
     try {
       return await this.serviceService.researchDuplicate(search);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -63,7 +63,7 @@ export class ServiceController {
       return await this.serviceService.update(_id, createServiceDto);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

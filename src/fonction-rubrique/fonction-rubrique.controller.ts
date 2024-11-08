@@ -62,7 +62,7 @@ export class FonctionRubriqueController {
 
       return this.combineRubrique(fonctionRubrique, rattacheRubrique);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

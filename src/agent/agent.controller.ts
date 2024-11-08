@@ -27,7 +27,7 @@ export class AgentController {
       return await this.agentService.create(createdAgent as AgentDTO);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -37,7 +37,7 @@ export class AgentController {
       return await this.agentService.findAll();
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -46,7 +46,7 @@ export class AgentController {
     try {
       return await this.agentService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -55,7 +55,7 @@ export class AgentController {
     try {
       return await this.agentService.researchDuplicate(data);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -67,7 +67,7 @@ export class AgentController {
       return await this.agentService.update(_id, updateAgentDto);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

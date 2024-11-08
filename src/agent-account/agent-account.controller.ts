@@ -15,7 +15,7 @@ export class AgentAccountController {
     try {
       return await this.agentAccountService.researchDuplicate(data);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

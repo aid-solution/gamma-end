@@ -23,6 +23,11 @@ export class User {
   password: string;
 
   @Prop({
+    default: true,
+  })
+  statut: boolean;
+
+  @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Agent',
   })

@@ -24,7 +24,7 @@ export class DirectionController {
       return await this.directionService.create(direction as DirectionDTO);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -33,7 +33,7 @@ export class DirectionController {
     try {
       return await this.directionService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -42,7 +42,7 @@ export class DirectionController {
     try {
       return await this.directionService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -51,7 +51,7 @@ export class DirectionController {
     try {
       return await this.directionService.researchDuplicate(search);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -63,7 +63,7 @@ export class DirectionController {
       return await this.directionService.update(_id, createDirectionDto);
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

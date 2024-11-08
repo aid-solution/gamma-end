@@ -56,7 +56,7 @@ export class ServiceRubriqueController {
 
       return this.combineRubrique(serviceRubrique, directionRubrique);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

@@ -25,7 +25,7 @@ export class BanqueController {
     try {
       return await this.banqueService.create(createBanqueDto);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -34,7 +34,7 @@ export class BanqueController {
     try {
       return await this.banqueService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -43,7 +43,7 @@ export class BanqueController {
     try {
       return await this.banqueService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -52,7 +52,7 @@ export class BanqueController {
     try {
       return await this.banqueService.researchDuplicate(search);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -63,7 +63,7 @@ export class BanqueController {
     try {
       return await this.banqueService.update(_id, createBanqueDto);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

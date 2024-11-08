@@ -24,7 +24,7 @@ export class ProfilController {
     try {
       return await this.profilService.create(createProfilDto);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -33,7 +33,7 @@ export class ProfilController {
     try {
       return await this.profilService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -42,7 +42,7 @@ export class ProfilController {
     try {
       return await this.profilService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -51,7 +51,7 @@ export class ProfilController {
     try {
       return await this.profilService.researchDuplicate(search);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -62,7 +62,7 @@ export class ProfilController {
     try {
       return await this.profilService.update(_id, createProfilDto);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

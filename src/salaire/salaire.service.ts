@@ -59,26 +59,33 @@ export class SalaireService {
     SalaireSchema,
   );
 
-  async create(createSalaireDto: CreateSalaireDTO): Promise<SalaireDocument> {
+  async create(): Promise<SalaireDocument> {
+    const lastSalary = await this.findLast();
+    const createSalaireDto: CreateSalaireDTO = {
+      mois: lastSalary.mois !== 12 ? lastSalary.mois + 1 : 1,
+      annee: lastSalary.mois !== 12 ? lastSalary.annee : lastSalary.annee + 1,
+    };
     return await (await this.salaireModel).create(createSalaireDto);
   }
 
-  async find(salaireDto: SalaireDTO) {
-    const mois = +salaireDto.mois;
-    const annee = +salaireDto.annee;
-    const salaire = await (
-      await this.salaireModel
-    )
-      .findOne({
-        $and: [{ mois: mois }, { annee: annee }],
-      })
+  async findLast(): Promise<SalaireDocument> {
+    const lastSalary: SalaireDocument[] = await (await this.salaireModel)
+      .find({})
+      .sort({ annee: -1, mois: -1 })
+      .limit(1)
       .exec();
-    let createdSalary: SalaireDocument;
-    if (!salaire) {
-      createdSalary = await this.create({ mois, annee });
-    }
+    return lastSalary[0];
+  }
+  async findOne(id: string): Promise<SalaireDocument> {
+    return await (await this.salaireModel).findById(id).exec();
+  }
 
-    const salary = salaire ? salaire : createdSalary;
+  async findAll(): Promise<SalaireDocument[]> {
+    return await (await this.salaireModel).find({}).exec();
+  }
+
+  async CalculSalaire(salaireDto: SalaireDTO) {
+    const salary = await this.findLast();
     const debutMois = new Date(
       Date.UTC(salary.annee, salary.mois - 1, 1, 0, 0, 0),
     );
@@ -173,7 +180,7 @@ export class SalaireService {
     };
   }
 
-  async imprime(params: ImprimeDTO) {
+  async generateDocument(params: ImprimeDTO) {
     const start: Record<Periode, number> = {
       Mensuelle: +params.mois,
       Trimestruelle:

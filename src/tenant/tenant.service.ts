@@ -30,6 +30,10 @@ import {
 } from 'src/schemas/users/service.schema';
 import { UserDocument, UserSchema } from 'src/schemas/users/user.schema';
 import { RubriqueService } from 'src/rubrique/rubrique.service';
+import {
+  SalaireDocument,
+  SalaireSchema,
+} from 'src/schemas/users/salaire.schema';
 
 @Injectable()
 export class TenantService {
@@ -46,6 +50,11 @@ export class TenantService {
     'admin',
     'Tenant',
     TenantSchema,
+  );
+  private readonly calendrierModel = this.useModel.createModel<SalaireDocument>(
+    this.tenantName,
+    'Salaire',
+    SalaireSchema,
   );
   private readonly fonctionModel = this.useModel.createModel<FonctionDocument>(
     this.tenantName,
@@ -92,6 +101,11 @@ export class TenantService {
 
   async findOne(subdomain: string) {
     const configNavigation = [
+      {
+        box: 'calendar',
+        name: 'Calendriers',
+        average: await (await this.calendrierModel).countDocuments(),
+      },
       {
         box: 'briefcase-alt-2',
         name: 'Fonctions',

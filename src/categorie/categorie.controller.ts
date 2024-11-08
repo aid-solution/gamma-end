@@ -25,7 +25,7 @@ export class CategorieController {
     try {
       return await this.categorieService.create(echellon);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -34,7 +34,7 @@ export class CategorieController {
     try {
       return await this.categorieService.findAll();
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -43,7 +43,7 @@ export class CategorieController {
     try {
       return await this.categorieService.findOne(id);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -52,7 +52,7 @@ export class CategorieController {
     try {
       return await this.categorieService.researchDuplicate(search);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 
@@ -62,7 +62,7 @@ export class CategorieController {
     try {
       return await this.categorieService.update(_id, echellon);
     } catch (error) {
-      throw new InternalServerErrorException('An unknow exception raised');
+      throw new InternalServerErrorException('an_unknow_exception_raised');
     }
   }
 }

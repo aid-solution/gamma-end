@@ -54,6 +54,7 @@ export class AuthController {
     try {
       return await this.authService.firstChangePassword(changePasswordDto);
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException(error, 'something went wrong');
     }
   }
