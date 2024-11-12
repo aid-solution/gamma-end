@@ -73,6 +73,7 @@ export class DirectionRubriqueService {
     )
       .find({ direction: direction })
       .populate({ path: 'rubrique', model: await this.rubriqueModel })
+      .sort({ _id: -1 })
       .exec();
   }
 
@@ -85,6 +86,7 @@ export class DirectionRubriqueService {
       .find({ direction: direction, dateFin: { $exists: false } })
       .populate({ path: 'rubrique', model: await this.rubriqueModel })
       .populate({ path: 'direction', model: await this.directionModel })
+      .sort({ _id: -1 })
       .exec();
   }
 

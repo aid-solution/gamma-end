@@ -53,6 +53,7 @@ export class GrilleService {
       .find({})
       .populate({ path: 'echellon', model: await this.echellonModel })
       .populate({ path: 'categorie', model: await this.categorieModel })
+      .sort({ _id: -1 })
       .exec();
   }
 

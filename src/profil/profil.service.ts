@@ -29,8 +29,11 @@ export class ProfilService {
   }
 
   async findAll(): Promise<ProfilDocument[]> {
-    return await (await this.profilModel)
+    return await (
+      await this.profilModel
+    )
       .find({ libelle: { $ne: 'admin' } })
+      .sort({ _id: -1 })
       .exec();
   }
 

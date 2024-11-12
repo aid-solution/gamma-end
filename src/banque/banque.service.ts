@@ -28,7 +28,7 @@ export class BanqueService {
   }
 
   async findAll(): Promise<BanqueDocument[]> {
-    return await (await this.banqueModel).find({}).exec();
+    return await (await this.banqueModel).find({}).sort({ _id: -1 }).exec();
   }
 
   async findOne(id: string): Promise<BanqueDocument> {

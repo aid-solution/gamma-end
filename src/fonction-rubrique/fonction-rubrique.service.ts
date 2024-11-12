@@ -46,7 +46,10 @@ export class FonctionRubriqueService {
   }
 
   async findAll(): Promise<FonctionRubriqueDocument[]> {
-    return await (await this.fonctionRubriqueFonctionModel).find({}).exec();
+    return await (await this.fonctionRubriqueFonctionModel)
+      .find({})
+      .sort({ _id: -1 })
+      .exec();
   }
 
   async findOne(id: string): Promise<FonctionRubriqueDocument> {
@@ -72,6 +75,7 @@ export class FonctionRubriqueService {
     )
       .find({ fonction: fonction, dateFin: { $exists: false } })
       .populate({ path: 'rubrique', model: await this.rubriqueModel })
+      .sort({ _id: -1 })
       .exec();
   }
 

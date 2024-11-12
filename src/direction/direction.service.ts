@@ -91,7 +91,7 @@ export class DirectionService {
   }
 
   async findAll(): Promise<DirectionDocument[]> {
-    return await (await this.directionModel).find({}).exec();
+    return await (await this.directionModel).find({}).sort({ _id: -1 }).exec();
   }
 
   async findOne(id: string): Promise<DirectionDocument> {

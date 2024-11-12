@@ -34,7 +34,10 @@ export class ChargeService {
   }
 
   async findByAgent(agent: string): Promise<ChargeDocument[]> {
-    return await (await this.chargeModel).find({ agent }).exec();
+    return await (await this.chargeModel)
+      .find({ agent })
+      .sort({ _id: -1 })
+      .exec();
   }
 
   async findOne(id: string): Promise<ChargeDocument> {

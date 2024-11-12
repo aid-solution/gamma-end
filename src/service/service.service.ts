@@ -111,6 +111,7 @@ export class ServiceService {
     )
       .find({})
       .populate({ path: 'direction', model: await this.directionModel })
+      .sort({ _id: -1 })
       .exec();
   }
 

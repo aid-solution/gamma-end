@@ -44,7 +44,10 @@ export class AgentRubriqueService {
   }
 
   async findAll(): Promise<AgentRubriqueDocument[]> {
-    return await (await this.agentRubriqueModel).find({}).exec();
+    return await (await this.agentRubriqueModel)
+      .find({})
+      .sort({ _id: -1 })
+      .exec();
   }
 
   async findOne(id: string): Promise<AgentRubriqueDocument> {
@@ -57,6 +60,7 @@ export class AgentRubriqueService {
     )
       .find({ agent: agent })
       .populate({ path: 'rubrique', model: await this.rubriqueModel })
+      .sort({ _id: -1 })
       .exec();
   }
 
@@ -68,6 +72,7 @@ export class AgentRubriqueService {
     )
       .find({ agent: agent, dateFin: { $exists: false } })
       .populate({ path: 'rubrique', model: await this.rubriqueModel })
+      .sort({ _id: -1 })
       .exec();
   }
 

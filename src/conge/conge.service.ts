@@ -39,9 +39,12 @@ export class CongeService {
   }
 
   async findAll() {
-    return await (await this.congeModel)
+    return await (
+      await this.congeModel
+    )
       .find({})
-      .populate({ path: 'agent', model: await this.agentModel });
+      .populate({ path: 'agent', model: await this.agentModel })
+      .sort({ _id: -1 });
   }
 
   async findOne(id: string): Promise<CongeDocument> {

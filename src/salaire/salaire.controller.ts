@@ -17,6 +17,18 @@ import { ImprimeDTO } from 'src/dto/imprime.dto';
 export class SalaireController {
   constructor(private readonly salaireService: SalaireService) {}
 
+  @Post('')
+  @HttpCode(201)
+  async CreateSalaire() {
+    try {
+      const response = await this.salaireService.create();
+      return response;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('an_unknow_exception_raised');
+    }
+  }
+
   @Get('/last-salary')
   async findLast() {
     try {

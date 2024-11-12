@@ -83,6 +83,7 @@ export class UsersService {
       .select('-password')
       .populate({ path: 'agent', model: await this.agentModel })
       .populate({ path: 'profil', model: await this.profilModel })
+      .sort({ _id: -1 })
       .lean();
   }
 

@@ -132,6 +132,7 @@ export class FonctionService {
       .find({})
       .populate({ path: 'direction', model: await this.directionModel })
       .populate({ path: 'service', model: await this.serviceModel })
+      .sort({ _id: -1 })
       .exec();
   }
 

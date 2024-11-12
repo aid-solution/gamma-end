@@ -34,7 +34,7 @@ export class CategorieService {
   }
 
   async findAll(): Promise<CategorieDocument[]> {
-    return await (await this.categorieModel).find({}).exec();
+    return await (await this.categorieModel).find({}).sort({ _id: -1 }).exec();
   }
 
   async findOne(id: string): Promise<CategorieDocument> {

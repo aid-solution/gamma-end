@@ -19,6 +19,18 @@ export class Salaire {
     default: new Date(),
   })
   datePaie: Date;
+
+  @Prop({
+    required: true,
+    default: false,
+  })
+  isClose: boolean;
+
+  @Prop({
+    required: true,
+    default: false,
+  })
+  isRemunerated: boolean;
 }
 
 export const SalaireSchema = SchemaFactory.createForClass(Salaire);

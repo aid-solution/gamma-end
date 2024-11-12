@@ -147,7 +147,8 @@ export class AgentService {
   async findAll(): Promise<AgentDocument[]> {
     const agents = await (await this.agentModel)
       .find({})
-      .select({ _id: 1, matricule: 1, nom: 1, prenom: 1, dateEmbauche: 1 });
+      .select({ _id: 1, matricule: 1, nom: 1, prenom: 1, dateEmbauche: 1 })
+      .sort({ _id: -1 });
     const affectations: any[] = await this.affectationService.findAll();
     const conges: any[] = await this.congeService.findAll();
     return this.listAgents(agents, affectations, conges);

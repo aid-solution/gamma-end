@@ -69,6 +69,7 @@ export class ServiceRubriqueService {
     )
       .find({ service: service })
       .populate({ path: 'rubrique', model: await this.rubriqueModel })
+      .sort({ _id: -1 })
       .exec();
   }
 
@@ -81,6 +82,7 @@ export class ServiceRubriqueService {
       .find({ service: service, dateFin: { $exists: false } })
       .populate({ path: 'rubrique', model: await this.rubriqueModel })
       .populate({ path: 'service', model: await this.serviceModel })
+      .sort({ _id: -1 })
       .exec();
   }
 

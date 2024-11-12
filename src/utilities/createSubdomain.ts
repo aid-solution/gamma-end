@@ -7,7 +7,7 @@ const removeSpecialCharater = (str: string) => {
 };
 
 const replaceSpaveWithDash = (str: string) => {
-  return str.split(' ').join('-');
+  return str.replaceAll(' ', '-');
 };
 
 export const createSubdomain = (denomination: string) => {

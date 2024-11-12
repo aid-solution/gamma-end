@@ -68,7 +68,8 @@ export class AvancePretService {
     )
       .find({})
       .populate({ path: 'agent', model: await this.agentModel })
-      .populate({ path: 'rubrique', model: await this.rubriqueModel });
+      .populate({ path: 'rubrique', model: await this.rubriqueModel })
+      .sort({ _id: -1 });
     const result: any[] = [];
     avancePrets.map((avancePret) => {
       const data = {

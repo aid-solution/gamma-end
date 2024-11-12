@@ -73,7 +73,8 @@ export class AbsenceService {
     )
       .find({})
       .populate({ path: 'motif', model: await this.motifAbsenceModel })
-      .populate({ path: 'agent', model: await this.agentModel });
+      .populate({ path: 'agent', model: await this.agentModel })
+      .sort({ _id: -1 });
     const result: any[] = [];
     absences.map((absence) => {
       const data = {

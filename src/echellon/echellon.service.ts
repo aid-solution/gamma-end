@@ -33,7 +33,7 @@ export class EchellonService {
   }
 
   async findAll(): Promise<EchellonDocument[]> {
-    return await (await this.echellonModel).find({}).exec();
+    return await (await this.echellonModel).find({}).sort({ _id: -1 }).exec();
   }
 
   async findOne(id: string): Promise<EchellonDocument> {

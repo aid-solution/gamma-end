@@ -29,6 +29,7 @@ import { RubriqueService } from 'src/rubrique/rubrique.service';
 import { CreateAgentRubriqueDTO } from 'src/dto/createAgentRubrique.dto';
 import { ImprimeDTO } from 'src/dto/imprime.dto';
 import { SalaireDTO } from 'src/dto/salaire.dto';
+import { UpdateSalaireDTO } from 'src/dto/updateSalaire.dto';
 
 type Periode = 'Mensuelle' | 'Trimestruelle' | 'Annuelle';
 
@@ -59,12 +60,29 @@ export class SalaireService {
     SalaireSchema,
   );
 
-  async create(): Promise<SalaireDocument> {
+  async create(): Promise<SalaireDocument | string> {
     const lastSalary = await this.findLast();
-    const createSalaireDto: CreateSalaireDTO = {
-      mois: lastSalary.mois !== 12 ? lastSalary.mois + 1 : 1,
-      annee: lastSalary.mois !== 12 ? lastSalary.annee : lastSalary.annee + 1,
-    };
+    let createSalaireDto: CreateSalaireDTO;
+
+    if (lastSalary) {
+      if (!lastSalary.isRemunerated) {
+        return 'salaire_is_not_remunerate';
+      }
+      createSalaireDto = {
+        mois: lastSalary.mois !== 12 ? lastSalary.mois + 1 : 1,
+        annee: lastSalary.mois !== 12 ? lastSalary.annee : lastSalary.annee + 1,
+      };
+
+      lastSalary.isClose = true;
+      await this.update(lastSalary);
+    } else {
+      const today = new Date();
+      createSalaireDto = {
+        mois: today.getMonth() + 1,
+        annee: today.getFullYear(),
+      };
+    }
+
     return await (await this.salaireModel).create(createSalaireDto);
   }
 
@@ -81,7 +99,7 @@ export class SalaireService {
   }
 
   async findAll(): Promise<SalaireDocument[]> {
-    return await (await this.salaireModel).find({}).exec();
+    return await (await this.salaireModel).find({}).sort({ _id: -1 }).exec();
   }
 
   async CalculSalaire(salaireDto: SalaireDTO) {
@@ -173,6 +191,9 @@ export class SalaireService {
 
     if (newAgentRubriques.length > 0)
       await this.agentRubriqueService.create(newAgentRubriques);
+
+    salary.isRemunerated = true;
+    await this.update(salary);
 
     return {
       datas: agentAllRubrique,
@@ -292,5 +313,13 @@ export class SalaireService {
       datas: agentsAllRubrique,
       datePaie: salaires[0] ? formatDate(salaires[0].datePaie) : '',
     };
+  }
+
+  async update(updateSalaireDto: UpdateSalaireDTO): Promise<SalaireDocument> {
+    const { _id, ...datas } = updateSalaireDto;
+    const update = (await (await this.salaireModel)
+      .findByIdAndUpdate(_id, datas, { new: true })
+      .exec()) as unknown as SalaireDocument;
+    return update;
   }
 }

@@ -72,29 +72,6 @@ export const combineAllRubriqueAgent = (
   const finMois = getLastDayOfMonth(debutMois);
   const agentAllRubrique: any[] = [];
   for (const affectation of affectations) {
-    const findConge = conges.find(
-      (cg) => cg.agent.toString() === affectation.agent._id.toString(),
-    );
-
-    const congeItem: { type: string; jours: number } = { type: '', jours: 0 };
-
-    if (findConge) {
-      const debut =
-        findConge.dateDebut.getTime() > debutMois.getTime()
-          ? findConge.dateDebut
-          : debutMois;
-      const fin =
-        findConge.dateFin.getTime() < finMois.getTime()
-          ? findConge.dateFin
-          : finMois;
-      const nombreJoursConge = differenceBetweenDates(debut, fin);
-      if (nombreJoursConge >= 30 && findConge.type === 'Sans solde') {
-        continue;
-      }
-      congeItem.jours = nombreJoursConge;
-      congeItem.type = findConge.type;
-    }
-
     const filterAgentRubrique = agentRubrique.filter(
       (ar) => ar.agent.toString() === affectation.agent._id.toString(),
     );
@@ -145,6 +122,29 @@ export const combineAllRubriqueAgent = (
       (absence) =>
         absence.agent.toString() === affectation.agent._id.toString(),
     );
+
+    const findConge = conges.find(
+      (cg) => cg.agent.toString() === affectation.agent._id.toString(),
+    );
+
+    const congeItem: { type: string; jours: number } = { type: '', jours: 0 };
+
+    if (findConge) {
+      const debut =
+        findConge.dateDebut.getTime() > debutMois.getTime()
+          ? findConge.dateDebut
+          : debutMois;
+      const fin =
+        findConge.dateFin.getTime() < finMois.getTime()
+          ? findConge.dateFin
+          : finMois;
+      const nombreJoursConge = differenceBetweenDates(debut, fin);
+      if (nombreJoursConge >= 30 && findConge.type === 'Sans solde') {
+        continue;
+      }
+      congeItem.jours = nombreJoursConge;
+      congeItem.type = findConge.type;
+    }
 
     const nombreJoursAbsence =
       congeItem.jours +

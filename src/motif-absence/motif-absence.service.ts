@@ -34,7 +34,10 @@ export class MotifAbsenceService {
   }
 
   async findAll(): Promise<MotifAbsenceDocument[]> {
-    return await (await this.motifAbsenceModel).find({}).exec();
+    return await (await this.motifAbsenceModel)
+      .find({})
+      .sort({ _id: -1 })
+      .exec();
   }
 
   async findOne(id: string): Promise<MotifAbsenceDocument> {

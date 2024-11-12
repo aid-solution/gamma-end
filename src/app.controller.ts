@@ -15,7 +15,7 @@ export class AppController {
     const tenantName = (request.headers['X-TENANT-NAME'] ||
       request.headers['x-tenant-name'] ||
       request.headers['X-Tenant-Name']) as string;
-    if (!tenantName) new BadRequestException('x-tenant-name header is missed');
+    if (!tenantName) new BadRequestException('x-tenant-name_header_is_missed');
     const connection = await this.appService.getConnection(tenantName);
     return { name: connection.name, readyState: connection.readyState };
   }

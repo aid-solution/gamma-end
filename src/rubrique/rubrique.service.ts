@@ -62,6 +62,7 @@ export class RubriqueService {
           },
         ],
       })
+      .sort({ _id: -1 })
       .exec();
   }
 
@@ -101,6 +102,7 @@ export class RubriqueService {
         gainRetenue: 'Retenue',
       })
       .select({ libelle: 1 })
+      .sort({ _id: -1 })
       .exec();
   }
 
