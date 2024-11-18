@@ -21,7 +21,7 @@ export class CategorieService {
     getTenantName(this.request),
   );
   private readonly categorieModel =
-    this.useModel.createModel<CategorieDocument>(
+    this.useModel.connectModel<CategorieDocument>(
       this.tenantName,
       'Categorie',
       CategorieSchema,

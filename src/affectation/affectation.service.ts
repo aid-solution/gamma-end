@@ -47,51 +47,51 @@ export class AffectationService {
   );
 
   private readonly affectationModel =
-    this.useModel.createModel<AffectationDocument>(
+    this.useModel.connectModel<AffectationDocument>(
       this.tenantName,
       'Affectation',
       AffectationSchema,
     );
 
-  private readonly agentModel = this.useModel.createModel<AgentDocument>(
+  private readonly agentModel = this.useModel.connectModel<AgentDocument>(
     this.tenantName,
     'Agent',
     AgentSchema,
   );
 
-  private readonly fonctionModel = this.useModel.createModel<FonctionDocument>(
+  private readonly fonctionModel = this.useModel.connectModel<FonctionDocument>(
     this.tenantName,
     'Fonction',
     FonctionSchema,
   );
 
-  private readonly serviceModel = this.useModel.createModel<ServiceDocument>(
+  private readonly serviceModel = this.useModel.connectModel<ServiceDocument>(
     this.tenantName,
     'Service',
     ServiceSchema,
   );
 
   private readonly directionModel =
-    this.useModel.createModel<DirectionDocument>(
+    this.useModel.connectModel<DirectionDocument>(
       this.tenantName,
       'Direction',
       DirectionSchema,
     );
 
-  private readonly grilleModel = this.useModel.createModel<GrilleDocument>(
+  private readonly grilleModel = this.useModel.connectModel<GrilleDocument>(
     this.tenantName,
     'Grille',
     GrilleSchema,
   );
   private readonly categorieModel =
-    this.useModel.createModel<CategorieDocument>(
+    this.useModel.connectModel<CategorieDocument>(
       this.tenantName,
       'Categorie',
       CategorieSchema,
     );
 
   private readonly agentRubriqueModel =
-    this.useModel.createModel<AgentRubriqueDocument>(
+    this.useModel.connectModel<AgentRubriqueDocument>(
       this.tenantName,
       'AgentRubrique',
       AgentRubriqueSchema,
@@ -205,10 +205,6 @@ export class AffectationService {
               {
                 dateDebut: { $lte: debutMois },
                 dateFin: { $gte: debutMois },
-              },
-              {
-                dateDebut: { $lte: debutMois },
-                dateFin: { $lte: debutMois },
               },
               {
                 dateDebut: { $lte: finMois, $gte: debutMois },

@@ -22,13 +22,13 @@ export class CongeService {
     getTenantName(this.request),
   );
 
-  private readonly congeModel = this.useModel.createModel(
+  private readonly congeModel = this.useModel.connectModel(
     this.tenantName,
     'conge',
     CongeSchema,
   );
 
-  private readonly agentModel = this.useModel.createModel<AgentDocument>(
+  private readonly agentModel = this.useModel.connectModel<AgentDocument>(
     this.tenantName,
     'Agent',
     AgentSchema,

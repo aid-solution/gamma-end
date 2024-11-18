@@ -21,19 +21,19 @@ export class UsersService {
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
   );
-  private userModel = this.useModel.createModel<UserDocument>(
+  private userModel = this.useModel.connectModel<UserDocument>(
     this.tenantName,
     'User',
     UserSchema,
   );
 
-  private readonly agentModel = this.useModel.createModel<AgentDocument>(
+  private readonly agentModel = this.useModel.connectModel<AgentDocument>(
     this.tenantName,
     'Agent',
     AgentSchema,
   );
 
-  private readonly profilModel = this.useModel.createModel<ProfilDocument>(
+  private readonly profilModel = this.useModel.connectModel<ProfilDocument>(
     this.tenantName,
     'Profil',
     ProfilSchema,

@@ -32,14 +32,14 @@ export class ServiceService {
     getTenantName(this.request),
   );
 
-  private readonly serviceModel = this.useModel.createModel<ServiceDocument>(
+  private readonly serviceModel = this.useModel.connectModel<ServiceDocument>(
     this.tenantName,
     'Service',
     ServiceSchema,
   );
 
   private readonly directionModel =
-    this.useModel.createModel<DirectionDocument>(
+    this.useModel.connectModel<DirectionDocument>(
       this.tenantName,
       'Direction',
       DirectionSchema,

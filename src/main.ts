@@ -12,6 +12,7 @@ async function bootstrap() {
         /^https?:\/\/[^\.]+\.onrender\.com(\/.*)?$/gm,
         /^https?:\/\/[^\.]+\.gamma-paie\.com(\/.*)?$/gm,
         /^https?:\/\/[^\.]+\.localhost:3000(\/.*)?$/gm,
+        /^https?:\/\/localhost:3000(\/.*)?$/gm,
       ].map((el) => el.test(origin));
       callback(
         null,

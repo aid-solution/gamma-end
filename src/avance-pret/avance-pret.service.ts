@@ -30,19 +30,19 @@ export class AvancePretService {
   );
 
   private readonly avancePretModel =
-    this.useModel.createModel<AvancePretDocument>(
+    this.useModel.connectModel<AvancePretDocument>(
       this.tenantName,
       'AvancePret',
       AvancePretSchema,
     );
 
-  private readonly agentModel = this.useModel.createModel<AgentDocument>(
+  private readonly agentModel = this.useModel.connectModel<AgentDocument>(
     this.tenantName,
     'Agent',
     AgentSchema,
   );
 
-  private readonly rubriqueModel = this.useModel.createModel<RubriqueDocument>(
+  private readonly rubriqueModel = this.useModel.connectModel<RubriqueDocument>(
     this.tenantName,
     'Rubrique',
     RubriqueSchema,
@@ -125,10 +125,6 @@ export class AvancePretService {
           {
             dateDebut: { $lte: debutMois },
             dateFin: { $gte: debutMois },
-          },
-          {
-            dateDebut: { $lte: debutMois },
-            dateFin: { $lte: debutMois },
           },
           {
             dateDebut: { $lte: finMois, $gte: debutMois },

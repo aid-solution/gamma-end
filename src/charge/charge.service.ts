@@ -19,7 +19,7 @@ export class ChargeService {
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
   );
-  private readonly chargeModel = this.useModel.createModel<ChargeDocument>(
+  private readonly chargeModel = this.useModel.connectModel<ChargeDocument>(
     this.tenantName,
     'Charge',
     ChargeSchema,

@@ -28,20 +28,20 @@ export class AbsenceService {
     getTenantName(this.request),
   );
 
-  private readonly absenceModel = this.useModel.createModel(
+  private readonly absenceModel = this.useModel.connectModel(
     this.tenantName,
     'Absence',
     AbsenceSchema,
   );
 
-  private readonly agentModel = this.useModel.createModel<AgentDocument>(
+  private readonly agentModel = this.useModel.connectModel<AgentDocument>(
     this.tenantName,
     'Agent',
     AgentSchema,
   );
 
   private readonly motifAbsenceModel =
-    this.useModel.createModel<MotifAbsenceDocument>(
+    this.useModel.connectModel<MotifAbsenceDocument>(
       this.tenantName,
       'MotifAbsence',
       MotifAbsenceSchema,
@@ -73,7 +73,11 @@ export class AbsenceService {
     )
       .find({})
       .populate({ path: 'motif', model: await this.motifAbsenceModel })
-      .populate({ path: 'agent', model: await this.agentModel })
+      .populate({
+        path: 'agent',
+        model: await this.agentModel,
+        select: { _id: 1, matricule: 1, nom: 1, prenom: 1 },
+      })
       .sort({ _id: -1 });
     const result: any[] = [];
     absences.map((absence) => {
@@ -84,8 +88,6 @@ export class AbsenceService {
         periode: `${formatDate(absence.dateDebut)} - ${formatDate(absence.dateFin)}`,
         jours: differenceBetweenDates(absence.dateDebut, absence.dateFin),
         deduction: absence.deduction ? 'Oui' : 'Non',
-        /* type: absence.type,
-        nature: absence.nature, */
         _id: absence._id,
       };
       result.push(data);
@@ -106,7 +108,8 @@ export class AbsenceService {
       type: absence.type,
       nature: absence.nature,
       jours: differenceBetweenDates(absence.dateDebut, absence.dateFin),
-      deduction: absence.deduction ? 'Oui' : 'Non',
+      deductionConge: absence.deductionConge == true ? 'Oui' : 'Non',
+      deduction: absence.deduction == true ? 'Oui' : 'Non',
       _id: absence._id,
     } as unknown as AbsenceDocument;
     return data;
@@ -135,10 +138,6 @@ export class AbsenceService {
             {
               dateDebut: { $lte: debutMois },
               dateFin: { $gte: debutMois },
-            },
-            {
-              dateDebut: { $lte: debutMois },
-              dateFin: { $lte: debutMois },
             },
             {
               dateDebut: { $lte: finMois, $gte: debutMois },

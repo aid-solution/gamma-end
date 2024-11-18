@@ -46,54 +46,54 @@ export class TenantService {
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
   );
-  private readonly tenantModel = this.useModel.createModel<TenantDocument>(
+  private readonly tenantModel = this.useModel.connectModel<TenantDocument>(
     'admin',
     'Tenant',
     TenantSchema,
   );
-  private readonly calendrierModel = this.useModel.createModel<SalaireDocument>(
+  private readonly calendrierModel = this.useModel.connectModel<SalaireDocument>(
     this.tenantName,
     'Salaire',
     SalaireSchema,
   );
-  private readonly fonctionModel = this.useModel.createModel<FonctionDocument>(
+  private readonly fonctionModel = this.useModel.connectModel<FonctionDocument>(
     this.tenantName,
     'Fonction',
     FonctionSchema,
   );
-  private readonly serviceModel = this.useModel.createModel<ServiceDocument>(
+  private readonly serviceModel = this.useModel.connectModel<ServiceDocument>(
     this.tenantName,
     'Service',
     ServiceSchema,
   );
   private readonly directionModel =
-    this.useModel.createModel<DirectionDocument>(
+    this.useModel.connectModel<DirectionDocument>(
       this.tenantName,
       'Direction',
       DirectionSchema,
     );
-  private readonly banqueModel = this.useModel.createModel<BanqueDocument>(
+  private readonly banqueModel = this.useModel.connectModel<BanqueDocument>(
     this.tenantName,
     'Banque',
     BanqueSchema,
   );
-  private readonly userModel = this.useModel.createModel<UserDocument>(
+  private readonly userModel = this.useModel.connectModel<UserDocument>(
     this.tenantName,
     'User',
     UserSchema,
   );
-  private readonly grilleModel = this.useModel.createModel<GrilleDocument>(
+  private readonly grilleModel = this.useModel.connectModel<GrilleDocument>(
     this.tenantName,
     'Grille',
     GrilleSchema,
   );
   private readonly categorieModel =
-    this.useModel.createModel<CategorieDocument>(
+    this.useModel.connectModel<CategorieDocument>(
       this.tenantName,
       'Categorie',
       CategorieSchema,
     );
-  private readonly echellonModel = this.useModel.createModel<EchellonDocument>(
+  private readonly echellonModel = this.useModel.connectModel<EchellonDocument>(
     this.tenantName,
     'Echellon',
     EchellonSchema,

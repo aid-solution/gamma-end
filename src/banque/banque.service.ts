@@ -17,7 +17,7 @@ export class BanqueService {
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
   );
-  private readonly banqueModel = this.useModel.createModel<BanqueDocument>(
+  private readonly banqueModel = this.useModel.connectModel<BanqueDocument>(
     this.tenantName,
     'Banque',
     BanqueSchema,

@@ -39,18 +39,18 @@ export class FonctionService {
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
   );
-  private readonly fonctionModel = this.useModel.createModel<FonctionDocument>(
+  private readonly fonctionModel = this.useModel.connectModel<FonctionDocument>(
     this.tenantName,
     'Fonction',
     FonctionSchema,
   );
   private readonly directionModel =
-    this.useModel.createModel<DirectionDocument>(
+    this.useModel.connectModel<DirectionDocument>(
       this.tenantName,
       'Direction',
       DirectionSchema,
     );
-  private readonly serviceModel = this.useModel.createModel<ServiceDocument>(
+  private readonly serviceModel = this.useModel.connectModel<ServiceDocument>(
     this.tenantName,
     'Service',
     ServiceSchema,

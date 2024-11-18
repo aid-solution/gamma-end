@@ -5,18 +5,20 @@ import { ConnectionResolver } from './connectionResolver.service';
 @Injectable()
 export class UseModel {
   constructor(private connectionResolver: ConnectionResolver) {}
-  async createModel<T>(
+
+  async connectModel<T>(
     tenantName: string | Promise<string>,
     dbName: string,
     schema?: Schema,
   ) {
-    if ((await tenantName) === 'admin') {
-      const connection = await this.connectionResolver.getAdminConnection();
-      return connection.model<T>(dbName, schema);
-    }
-    const connection = await this.connectionResolver.getCustomerConnection(
-      await tenantName,
-    );
+    const resolvedTenantName = await tenantName;
+    const connection =
+      resolvedTenantName === 'admin'
+        ? await this.connectionResolver.getAdminConnection()
+        : await this.connectionResolver.getCustomerConnection(
+            resolvedTenantName,
+          );
+
     return connection.model<T>(dbName, schema);
   }
 }

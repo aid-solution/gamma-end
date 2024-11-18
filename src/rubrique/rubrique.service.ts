@@ -21,7 +21,7 @@ export class RubriqueService {
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
   );
-  private readonly rubriqueModel = this.useModel.createModel<RubriqueDocument>(
+  private readonly rubriqueModel = this.useModel.connectModel<RubriqueDocument>(
     this.tenantName,
     'Rubrique',
     RubriqueSchema,

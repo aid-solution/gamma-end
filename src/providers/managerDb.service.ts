@@ -1,6 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
-import { Request } from 'express';
+import { Injectable } from '@nestjs/common';
 import { TenantCachingService } from './tenantCaching.service';
 
 @Injectable()
@@ -8,10 +6,7 @@ export class ManagerDbService {
   startSession() {
     throw new Error('Method not implemented.');
   }
-  constructor(
-    @Inject(REQUEST) private readonly request: Request,
-    private tenantCachingService: TenantCachingService,
-  ) {}
+  constructor(private tenantCachingService: TenantCachingService) {}
 
   async getTenantExistenceBySubdoamin(subdomain: string) {
     return await this.tenantCachingService.getTenant(subdomain);

@@ -26,7 +26,7 @@ export class DirectionService {
     getTenantName(this.request),
   );
   private readonly directionModel =
-    this.useModel.createModel<DirectionDocument>(
+    this.useModel.connectModel<DirectionDocument>(
       this.tenantName,
       'Direction',
       DirectionSchema,

@@ -54,7 +54,7 @@ export class SalaireService {
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
   );
-  private readonly salaireModel = this.useModel.createModel<SalaireDocument>(
+  private readonly salaireModel = this.useModel.connectModel<SalaireDocument>(
     this.tenantName,
     'Salaire',
     SalaireSchema,

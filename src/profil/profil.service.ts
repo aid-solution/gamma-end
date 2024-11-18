@@ -18,7 +18,7 @@ export class ProfilService {
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
   );
-  private readonly profilModel = this.useModel.createModel<ProfilDocument>(
+  private readonly profilModel = this.useModel.connectModel<ProfilDocument>(
     this.tenantName,
     'Profil',
     ProfilSchema,

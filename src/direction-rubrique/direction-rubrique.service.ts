@@ -32,20 +32,20 @@ export class DirectionRubriqueService {
     getTenantName(this.request),
   );
   private readonly directionRubriqueModel =
-    this.useModel.createModel<DirectionRubriqueDocument>(
+    this.useModel.connectModel<DirectionRubriqueDocument>(
       this.tenantName,
       'DirectionRubrique',
       DirectionRubriqueSchema,
     );
 
-  private readonly rubriqueModel = this.useModel.createModel<RubriqueDocument>(
+  private readonly rubriqueModel = this.useModel.connectModel<RubriqueDocument>(
     this.tenantName,
     'Rubrique',
     RubriqueSchema,
   );
 
   private readonly directionModel =
-    this.useModel.createModel<DirectionDocument>(
+    this.useModel.connectModel<DirectionDocument>(
       this.tenantName,
       'Direction',
       DirectionSchema,
@@ -110,10 +110,6 @@ export class DirectionRubriqueService {
           {
             dateDebut: { $lte: debutMois },
             dateFin: { $gte: debutMois },
-          },
-          {
-            dateDebut: { $lte: debutMois },
-            dateFin: { $lte: debutMois },
           },
           {
             dateDebut: { $lte: finMois, $gte: debutMois },

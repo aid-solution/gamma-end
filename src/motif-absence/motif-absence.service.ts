@@ -21,7 +21,7 @@ export class MotifAbsenceService {
     getTenantName(this.request),
   );
   private readonly motifAbsenceModel =
-    this.useModel.createModel<MotifAbsenceDocument>(
+    this.useModel.connectModel<MotifAbsenceDocument>(
       this.tenantName,
       'MotifAbsence',
       MotifAbsenceSchema,

@@ -23,13 +23,13 @@ export class TenantAccountService {
     getTenantName(this.request),
   );
   private readonly tenantAccountModel =
-    this.useModel.createModel<TenantAccountDocument>(
+    this.useModel.connectModel<TenantAccountDocument>(
       this.tenantName,
       'TenantAccount',
       TenantAccountSchema,
     );
 
-  private readonly banqueModel = this.useModel.createModel<BanqueDocument>(
+  private readonly banqueModel = this.useModel.connectModel<BanqueDocument>(
     this.tenantName,
     'Banque',
     BanqueSchema,

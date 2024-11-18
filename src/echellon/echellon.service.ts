@@ -20,7 +20,7 @@ export class EchellonService {
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
   );
-  private readonly echellonModel = this.useModel.createModel<EchellonDocument>(
+  private readonly echellonModel = this.useModel.connectModel<EchellonDocument>(
     this.tenantName,
     'Echellon',
     EchellonSchema,

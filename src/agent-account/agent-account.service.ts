@@ -23,18 +23,18 @@ export class AgentAccountService {
     getTenantName(this.request),
   );
   private readonly agentAccountModel =
-    this.useModel.createModel<AgentAccountDocument>(
+    this.useModel.connectModel<AgentAccountDocument>(
       this.tenantName,
       'AgentAccount',
       AgentAccountSchema,
     );
 
-  private readonly banqueModel = this.useModel.createModel<BanqueDocument>(
+  private readonly banqueModel = this.useModel.connectModel<BanqueDocument>(
     this.tenantName,
     'Banque',
     BanqueSchema,
   );
-  private readonly agentModel = this.useModel.createModel<AgentDocument>(
+  private readonly agentModel = this.useModel.connectModel<AgentDocument>(
     this.tenantName,
     'Agent',
     AgentSchema,

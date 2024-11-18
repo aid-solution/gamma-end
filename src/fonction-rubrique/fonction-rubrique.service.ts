@@ -27,13 +27,13 @@ export class FonctionRubriqueService {
     getTenantName(this.request),
   );
   private readonly fonctionRubriqueFonctionModel =
-    this.useModel.createModel<FonctionRubriqueDocument>(
+    this.useModel.connectModel<FonctionRubriqueDocument>(
       this.tenantName,
       'FonctionRubrique',
       FonctionRubriqueSchema,
     );
 
-  private readonly rubriqueModel = this.useModel.createModel<RubriqueDocument>(
+  private readonly rubriqueModel = this.useModel.connectModel<RubriqueDocument>(
     this.tenantName,
     'Rubrique',
     RubriqueSchema,
@@ -99,10 +99,6 @@ export class FonctionRubriqueService {
           {
             dateDebut: { $lte: debutMois },
             dateFin: { $gte: debutMois },
-          },
-          {
-            dateDebut: { $lte: debutMois },
-            dateFin: { $lte: debutMois },
           },
           {
             dateDebut: { $lte: finMois, $gte: debutMois },
