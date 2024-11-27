@@ -25,4 +25,8 @@ export class AffectationDTO {
   @IsString()
   @IsOptional()
   salaire: string;
+
+  @IsString()
+  @IsOptional()
+  dureeContrat: string;
 }

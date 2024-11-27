@@ -219,59 +219,73 @@ export const combineAllRubriqueAgent = (
     }
 
     let montantCotisation = 0;
-    if (
-      !retenues.find((retenue) => retenue.code === 201) &&
-      affectation.agent.cotisation === 'CNSS'
-    ) {
-      const salaireImposableCNSS = salaireImposable('CNSS', gains);
+    const cotisation = affectation.agent.cotisation;
+    const salaireImposableCNSS = salaireImposable('CNSS', gains);
+    if (cotisation === 'CNSS') {
+      const rubriqueCNSS = retenues.find((retenue) => retenue.code === 201);
       montantCotisation =
         salaireImposableCNSS >= 500000
           ? 26250
           : Math.floor(salaireImposableCNSS * 0.0525); // 500000*0.525=26250
-      const item: Rubrique = {
-        _id: '201',
-        code: 201,
-        libelle: 'CNSS',
-        montant: montantCotisation,
-      };
-      retenues.unshift(item);
+      if (!rubriqueCNSS) {
+        const item: Rubrique = {
+          _id: '201',
+          code: 201,
+          libelle: 'CNSS',
+          montant: montantCotisation,
+        };
+        retenues.unshift(item);
 
-      const cnss = initialRubriques.find((initial) => initial.code === 201);
-      const rubrique = {
-        montant: montantCotisation,
-        rubrique: cnss,
-        agent: affectation.agent._id,
-        dateDebut: debutMois,
-        dateFin: finMois,
-      } as unknown as AgentRubriqueDocument;
-      agentRubrique.push(rubrique);
-    }
-
-    if (
-      !retenues.find((retenue) => retenue.code === 220) &&
-      affectation.agent.cotisation === 'FNR'
-    ) {
+        const cnss = initialRubriques.find((initial) => initial.code === 201);
+        const rubrique = {
+          montant: montantCotisation,
+          rubrique: cnss,
+          agent: affectation.agent._id,
+          dateDebut: debutMois,
+          dateFin: finMois,
+        } as unknown as AgentRubriqueDocument;
+        agentRubrique.push(rubrique);
+      } else {
+        if (rubriqueCNSS.montant !== montantCotisation) {
+          const index = retenues.findIndex((retenue) => retenue.code === 201);
+          retenues[index].montant = montantCotisation;
+        }
+      }
+    } else {
+      const rubriqueFNR = retenues.find((retenue) => retenue.code === 220);
       montantCotisation = Math.floor(salaireBase * 0.06);
-      const item: Rubrique = {
-        _id: '202',
-        code: 202,
-        libelle: 'FNR',
-        montant: montantCotisation,
-      };
-      retenues.unshift(item);
+      if (!rubriqueFNR) {
+        const item: Rubrique = {
+          _id: '202',
+          code: 202,
+          libelle: 'FNR',
+          montant: montantCotisation,
+        };
+        retenues.unshift(item);
 
-      const fnr = initialRubriques.find((initial) => initial.code === 220);
-      const rubrique = {
-        montant: montantCotisation,
-        rubrique: fnr,
-        agent: affectation.agent._id,
-        dateDebut: debutMois,
-        dateFin: finMois,
-      } as unknown as AgentRubriqueDocument;
-      agentRubrique.push(rubrique);
+        const fnr = initialRubriques.find((initial) => initial.code === 220);
+        const rubrique = {
+          montant: montantCotisation,
+          rubrique: fnr,
+          agent: affectation.agent._id,
+          dateDebut: debutMois,
+          dateFin: finMois,
+        } as unknown as AgentRubriqueDocument;
+        agentRubrique.push(rubrique);
+      } else {
+        if (rubriqueFNR.montant !== montantCotisation) {
+          const index = retenues.findIndex((retenue) => retenue.code === 201);
+          retenues[index].montant = montantCotisation;
+        }
+      }
     }
 
-    if (!retenues.find((retenue) => retenue.code === 154)) {
+    const salaireImposableIUTS =
+      salaireImposable('IUTS', gains) - montantCotisation;
+    const IUTS = grilleIUTS(salaireImposableIUTS, filterCharge.length);
+    const rubriqueIUTS = retenues.find((retenue) => retenue.code === 154);
+
+    if (!rubriqueIUTS) {
       const salaireImposableIUTS =
         salaireImposable('IUTS', gains) - montantCotisation;
       const IUTS = grilleIUTS(salaireImposableIUTS, filterCharge.length);
@@ -293,6 +307,11 @@ export const combineAllRubriqueAgent = (
       } as unknown as AgentRubriqueDocument;
 
       agentRubrique.push(rubrique);
+    } else {
+      if (rubriqueIUTS.montant !== IUTS) {
+        const index = retenues.findIndex((retenue) => retenue.code === 154);
+        retenues[index].montant = IUTS;
+      }
     }
 
     if (
@@ -304,7 +323,11 @@ export const combineAllRubriqueAgent = (
         congeItem.type === 'Maternité'
           ? Math.floor(((salaireBase * 0.5) / 30) * congeItem.jours)
           : Math.floor((salaireBase / 30) * congeItem.jours);
-      if (!gains.find((gain) => [110, 111].includes(gain.code))) {
+
+      const rubriqueConge = gains.find((gain) =>
+        [110, 111].includes(gain.code),
+      );
+      if (!rubriqueConge) {
         const item: Rubrique = {
           _id: congeItem.type === 'Annuel' ? '110' : '111',
           code: congeItem.type === 'Annuel' ? 110 : 111,
@@ -328,11 +351,20 @@ export const combineAllRubriqueAgent = (
         } as unknown as AgentRubriqueDocument;
 
         agentRubrique.push(rubrique);
+      } else {
+        if (rubriqueConge.montant !== salaireConge) {
+          const index = gains.findIndex((gain) =>
+            [110, 111].includes(gain.code),
+          );
+          gains[index].montant = salaireConge;
+        }
       }
-
-      if (!retenues.find((retenue) => [155, 156].includes(retenue.code))) {
-        montantCotisationConge =
-          salaireConge >= 500000 ? 26250 : Math.floor(salaireConge * 0.0525); // 500000*0.525=26250
+      const rubriqueCongeCNSS = retenues.find((retenue) =>
+        [155, 156].includes(retenue.code),
+      );
+      montantCotisationConge =
+        salaireConge >= 500000 ? 26250 : Math.floor(salaireConge * 0.0525); // 500000*0.525=26250
+      if (!rubriqueCongeCNSS) {
         const item: Rubrique = {
           _id: congeItem.type === 'Annuel' ? '202' : '203',
           code: congeItem.type === 'Annuel' ? 202 : 203,
@@ -357,6 +389,13 @@ export const combineAllRubriqueAgent = (
         } as unknown as AgentRubriqueDocument;
 
         agentRubrique.push(rubrique);
+      } else {
+        if (rubriqueCongeCNSS.montant !== montantCotisationConge) {
+          const index = retenues.findIndex((retenue) =>
+            [155, 156].includes(retenue.code),
+          );
+          retenues[index].montant = montantCotisationConge;
+        }
       }
 
       if (!retenues.find((retenue) => [155, 156].includes(retenue.code))) {

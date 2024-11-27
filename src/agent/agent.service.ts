@@ -120,6 +120,13 @@ export class AgentService {
         dateDebut: agent.dateEmbauche,
         ...rest,
       };
+
+      if (agent.contrat === 'CDD') {
+        const fin = new Date(agent.dateEmbauche);
+        fin.setMonth(fin.getMonth() + Number(affectationData.dureeContrat) - 1);
+        createAffectationDto.dateFin = formatDate(fin, '/');
+      }
+
       await this.affectationService.create(createAffectationDto);
 
       const createAccountDto: CreateAgentAccountDTO = {

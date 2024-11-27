@@ -30,6 +30,7 @@ import { CreateAgentRubriqueDTO } from 'src/dto/createAgentRubrique.dto';
 import { ImprimeDTO } from 'src/dto/imprime.dto';
 import { SalaireDTO } from 'src/dto/salaire.dto';
 import { UpdateSalaireDTO } from 'src/dto/updateSalaire.dto';
+import { UpdateAgentRubriqueDTO } from 'src/dto/updateAgentRubrique.dto';
 
 type Periode = 'Mensuelle' | 'Trimestruelle' | 'Annuelle';
 
@@ -174,23 +175,29 @@ export class SalaireService {
       conges,
     );
 
-    const changeTypeOfRubriqueAgent = [
-      ...agentRubriques,
-    ] as unknown as CreateAgentRubriqueDTO[];
-
     const newAgentRubriques: CreateAgentRubriqueDTO[] = [];
-    for (
-      let index = copy.length;
-      index < changeTypeOfRubriqueAgent.length;
-      index++
-    ) {
-      const element = changeTypeOfRubriqueAgent[index];
-      element.rubrique = element.rubrique._id;
-      newAgentRubriques.push(element);
+    const updateAgentRubriques: UpdateAgentRubriqueDTO[] = [];
+    for (let index = 0; index < agentRubriques.length; index++) {
+      if (index < copy.length) {
+        const element = agentRubriques[
+          index
+        ] as unknown as UpdateAgentRubriqueDTO;
+        updateAgentRubriques.push(element);
+      } else {
+        const element = agentRubriques[
+          index
+        ] as unknown as CreateAgentRubriqueDTO;
+        element.rubrique = element.rubrique._id;
+        newAgentRubriques.push(element);
+      }
     }
 
-    if (newAgentRubriques.length > 0)
+    if (updateAgentRubriques.length > 0) {
+      await this.agentRubriqueService.updateAll(updateAgentRubriques);
+    }
+    if (newAgentRubriques.length > 0) {
       await this.agentRubriqueService.create(newAgentRubriques);
+    }
 
     salary.isRemunerated = true;
     await this.update(salary);

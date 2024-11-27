@@ -80,10 +80,6 @@ export class AgentDTO {
   affectation: AffectationDTO;
 
   @IsString()
-  @IsOptional()
-  dureeContrat: string;
-
-  @IsString()
   @IsNotEmpty()
   @IsEnum(['CNSS', 'FNR'])
   cotisation: string;

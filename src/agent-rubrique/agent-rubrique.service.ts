@@ -15,6 +15,7 @@ import {
 } from 'src/schemas/users/agentRubrique.schema';
 import { UpdateAffectationRubriqueDTO } from 'src/dto/updateAffectationRubrique.dto';
 import { CreateAgentRubriqueDTO } from 'src/dto/createAgentRubrique.dto';
+import { UpdateAgentRubriqueDTO } from 'src/dto/updateAgentRubrique.dto';
 
 @Injectable()
 export class AgentRubriqueService {
@@ -116,6 +117,20 @@ export class AgentRubriqueService {
 
   async update(
     updateAgentRubriqueDto: UpdateAffectationRubriqueDTO[],
+  ): Promise<BulkWriteResult> {
+    const bulkOps = updateAgentRubriqueDto.map((dto) => ({
+      updateMany: {
+        filter: { _id: dto._id },
+        update: { $set: dto },
+      },
+    }));
+
+    const result = await (await this.agentRubriqueModel).bulkWrite(bulkOps);
+    return result;
+  }
+
+  async updateAll(
+    updateAgentRubriqueDto: UpdateAgentRubriqueDTO[],
   ): Promise<BulkWriteResult> {
     const bulkOps = updateAgentRubriqueDto.map((dto) => ({
       updateMany: {
