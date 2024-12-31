@@ -12,12 +12,6 @@ import {
   DirectionDocument,
   DirectionSchema,
 } from 'src/schemas/users/direction.schema';
-import { ServiceDTO } from 'src/dto/service.dto';
-import { AffectationRubriqueDTO } from 'src/dto/affectationRubrique.dto';
-import { CreateServiceRubriqueDTO } from 'src/dto/createServiceRubrique.dto';
-import { UpdateAffectationRubriqueDTO } from 'src/dto/updateAffectationRubrique.dto';
-import { ServiceRubrique } from 'src/schemas/users/serviceRubrique.schema';
-import { ServiceRubriqueService } from 'src/service-rubrique/service-rubrique.service';
 
 @Injectable()
 export class ServiceService {
@@ -25,7 +19,6 @@ export class ServiceService {
     private readonly useModel: UseModel,
     @Inject(REQUEST) private readonly request: Request,
     private managerDbService: ManagerDbService,
-    private readonly serviceRubriqueService: ServiceRubriqueService,
   ) {}
 
   private readonly tenantName = this.managerDbService.getTenantDbName(
@@ -45,63 +38,10 @@ export class ServiceService {
       DirectionSchema,
     );
 
-  private getAllRubriqueService(
-    oldRubrique: ServiceRubrique[],
-    rubrique: AffectationRubriqueDTO[],
-  ) {
-    const affectationRubriqueUpdate: UpdateAffectationRubriqueDTO[] = [];
-    const idOfUsedRubrique: string[] = [];
-    oldRubrique.map((old: any) => {
-      const filter = rubrique.filter(
-        (rub: any) => rub._id === old.rubrique._id.toString(),
-      );
-
-      if (!filter.length || (filter[0] && filter[0].montant !== old.montant)) {
-        const affectation = {
-          _id: old._id,
-          dateFin: new Date(),
-        } as unknown as UpdateAffectationRubriqueDTO;
-        affectationRubriqueUpdate.push(affectation);
-      } else if (
-        filter[0] &&
-        filter[0].montant === old.montant &&
-        old.dateFin === undefined
-      ) {
-        idOfUsedRubrique.push(filter[0]._id);
-      }
-    });
-    return { affectationRubriqueUpdate, idOfUsedRubrique };
-  }
-
-  private affectationRubriqueService(
-    id: string,
-    rubrique: AffectationRubriqueDTO[],
-    idOfUsedRubrique: string[],
-  ) {
-    const affectationRubrique: CreateServiceRubriqueDTO[] = [];
-    rubrique.map((rub) => {
-      if (!idOfUsedRubrique.includes(rub._id)) {
-        const affectation = {
-          rubrique: rub._id,
-          service: id,
-          montant: rub.montant,
-        } as unknown as CreateServiceRubriqueDTO;
-        affectationRubrique.push(affectation);
-      }
-    });
-    return affectationRubrique;
-  }
-
-  async create(createServiceDto: ServiceDTO): Promise<ServiceDocument> {
-    const { libelle, direction, rubrique } = createServiceDto;
+  async create(libelle: string, direction: string): Promise<ServiceDocument> {
     const service = await (
       await this.serviceModel
     ).create({ libelle, direction });
-    const affectationRubrique: CreateServiceRubriqueDTO[] =
-      this.affectationRubriqueService(service._id.toString(), rubrique, []);
-
-    await this.serviceRubriqueService.create(affectationRubrique);
-
     return service;
   }
 
@@ -128,28 +68,10 @@ export class ServiceService {
     return await (await this.serviceModel).findOne({ libelle }).exec();
   }
 
-  async update(id: string, updateServiceDto: ServiceDTO) {
-    const oldRubrique = await this.serviceRubriqueService.findAllByService(id);
-
-    const { libelle, direction, rubrique } = updateServiceDto;
-
-    const { affectationRubriqueUpdate, idOfUsedRubrique } =
-      this.getAllRubriqueService(oldRubrique, rubrique);
-
-    const affectationRubrique = this.affectationRubriqueService(
-      id,
-      rubrique,
-      idOfUsedRubrique,
-    );
-
+  async update(_id: string, libelle: string, direction: string) {
     const serviceUpdated = await (await this.serviceModel)
-      .findByIdAndUpdate(id, { libelle, direction }, { new: true })
+      .findByIdAndUpdate(_id, { libelle, direction }, { new: true })
       .exec();
-
-    if (affectationRubriqueUpdate.length > 0)
-      await this.serviceRubriqueService.update(affectationRubriqueUpdate);
-    if (affectationRubrique.length > 0)
-      await this.serviceRubriqueService.create(affectationRubrique);
     return serviceUpdated;
   }
 }

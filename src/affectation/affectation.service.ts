@@ -97,9 +97,7 @@ export class AffectationService {
       AgentRubriqueSchema,
     );
 
-  async create(
-    affectationDto: CreateAffectationDTO,
-  ): Promise<AffectationDocument> {
+  async create(affectationDto: CreateAffectationDTO) {
     return await (await this.affectationModel).create(affectationDto);
   }
 
@@ -171,6 +169,14 @@ export class AffectationService {
       salaire: affectation.agentRubrique.montant.toString(),
       _id: affectation._id,
     };
+  }
+
+  async findAllByAgent(agent: string) {
+    return await (await this.affectationModel)
+      .find({ agent })
+      .sort({ _id: -1 })
+      .limit(1)
+      .exec();
   }
 
   async findOneWithoutPopulate(id: string): Promise<any> {

@@ -8,12 +8,6 @@ import {
   FonctionDocument,
   FonctionSchema,
 } from 'src/schemas/users/fonction.schema';
-import { FonctionDTO } from 'src/dto/fonction.dto';
-import { CreateFonctionRubriqueDTO } from 'src/dto/createFonctionRubrique.dto';
-import { UpdateAffectationRubriqueDTO } from 'src/dto/updateAffectationRubrique.dto';
-import { AffectationRubriqueDTO } from 'src/dto/affectationRubrique.dto';
-import { FonctionRubriqueService } from 'src/fonction-rubrique/fonction-rubrique.service';
-import { FonctionRubrique } from 'src/schemas/users/fonctionRubrique.schema';
 import { CreateFonctionDTO } from 'src/dto/createFonction.dto';
 import {
   DirectionDocument,
@@ -23,18 +17,14 @@ import {
   ServiceDocument,
   ServiceSchema,
 } from 'src/schemas/users/service.schema';
+import { UpdateFonctionDTO } from 'src/dto/updateFonction.dto';
 
-interface Obj {
-  service?: string;
-  direction?: string;
-}
 @Injectable()
 export class FonctionService {
   constructor(
     private readonly useModel: UseModel,
     @Inject(REQUEST) private readonly request: Request,
     private managerDbService: ManagerDbService,
-    private readonly fonctionRubriqueService: FonctionRubriqueService,
   ) {}
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
@@ -56,73 +46,8 @@ export class FonctionService {
     ServiceSchema,
   );
 
-  private getAllRubriqueFonction(
-    oldRubrique: FonctionRubrique[],
-    rubrique: AffectationRubriqueDTO[],
-  ) {
-    const affectationRubriqueUpdate: UpdateAffectationRubriqueDTO[] = [];
-    const idOfUsedRubrique: string[] = [];
-    oldRubrique.map((old: any) => {
-      const filter = rubrique.filter(
-        (rub: any) => rub._id === old.rubrique._id.toString(),
-      );
-
-      if (!filter.length || (filter[0] && filter[0].montant !== old.montant)) {
-        const affectation = {
-          _id: old._id,
-          dateFin: new Date(),
-        } as unknown as UpdateAffectationRubriqueDTO;
-        affectationRubriqueUpdate.push(affectation);
-      } else if (
-        filter[0] &&
-        filter[0].montant === old.montant &&
-        old.dateFin === undefined
-      ) {
-        idOfUsedRubrique.push(filter[0]._id);
-      }
-    });
-    return { affectationRubriqueUpdate, idOfUsedRubrique };
-  }
-
-  private affectationRubriqueFonction(
-    id: string,
-    rubrique: AffectationRubriqueDTO[],
-    idOfUsedRubrique: string[],
-  ) {
-    const affectationRubrique: CreateFonctionRubriqueDTO[] = [];
-    rubrique.map((rub) => {
-      if (!idOfUsedRubrique.includes(rub._id)) {
-        const affectation = {
-          rubrique: rub._id,
-          fonction: id,
-          montant: rub.montant,
-        } as unknown as CreateFonctionRubriqueDTO;
-        affectationRubrique.push(affectation);
-      }
-    });
-    return affectationRubrique;
-  }
-
-  async create(fonctionDto: FonctionDTO) {
-    const { rubrique, ...fonctionObject } = fonctionDto;
-
-    const obj: Obj = {};
-    if (fonctionObject.rattache === 'Service')
-      obj.service = fonctionObject.rattacheA;
-    else obj.direction = fonctionObject.rattacheA;
-
-    const createFonctionDto = {
-      libelle: fonctionObject.libelle,
-      rattache: fonctionObject.rattache,
-      ...obj,
-    } as unknown as CreateFonctionDTO;
-    const fonction = await (await this.fonctionModel).create(createFonctionDto);
-    const affectationRubrique: CreateFonctionRubriqueDTO[] =
-      this.affectationRubriqueFonction(fonction._id.toString(), rubrique, []);
-
-    await this.fonctionRubriqueService.create(affectationRubrique);
-
-    return fonction;
+  async create(fonctionDto: CreateFonctionDTO) {
+    return await (await this.fonctionModel).create(fonctionDto);
   }
 
   async findAll(): Promise<FonctionDocument[]> {
@@ -150,29 +75,11 @@ export class FonctionService {
     return await (await this.fonctionModel).findOne({ libelle }).exec();
   }
 
-  async update(id: string, updateFonctionDto: FonctionDTO) {
-    const oldRubrique =
-      await this.fonctionRubriqueService.findAllByFonction(id);
-
-    const { rubrique, ...fonctionObject } = updateFonctionDto;
-
-    const { affectationRubriqueUpdate, idOfUsedRubrique } =
-      this.getAllRubriqueFonction(oldRubrique, rubrique);
-
-    const affectationRubrique = this.affectationRubriqueFonction(
-      id,
-      rubrique,
-      idOfUsedRubrique,
-    );
-
+  async update(updateFonctionDto: UpdateFonctionDTO) {
+    const { _id, ...dataToUpdate } = updateFonctionDto;
     const FonctionUpdated = await (await this.fonctionModel)
-      .findByIdAndUpdate(id, fonctionObject, { new: true })
+      .findByIdAndUpdate(_id, dataToUpdate, { new: true })
       .exec();
-
-    if (affectationRubriqueUpdate.length > 0)
-      await this.fonctionRubriqueService.update(affectationRubriqueUpdate);
-    if (affectationRubrique.length > 0)
-      await this.fonctionRubriqueService.create(affectationRubrique);
     return FonctionUpdated;
   }
 }

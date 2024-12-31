@@ -9,6 +9,7 @@ import { AffectationService } from 'src/affectation/affectation.service';
 import { FonctionRubriqueService } from 'src/fonction-rubrique/fonction-rubrique.service';
 import { ServiceRubriqueService } from 'src/service-rubrique/service-rubrique.service';
 import { DirectionRubriqueService } from 'src/direction-rubrique/direction-rubrique.service';
+import { SalaireService } from 'src/salaire/salaire.service';
 
 @Module({
   controllers: [AgentRubriqueController],
@@ -22,6 +23,7 @@ import { DirectionRubriqueService } from 'src/direction-rubrique/direction-rubri
     FonctionRubriqueService,
     ServiceRubriqueService,
     DirectionRubriqueService,
+    SalaireService,
   ],
   exports: [AgentRubriqueService],
 })

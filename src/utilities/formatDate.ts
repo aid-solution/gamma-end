@@ -23,3 +23,19 @@ export const getLastDayOfMonth = (date: Date) => {
   const lastDay = new Date(year, month + 1, 0);
   return new Date(Date.UTC(year, month, lastDay.getDate(), 0, 0, 0));
 };
+
+export const reduceOneDay = (debut: Date) => {
+  const dateToReduceOneDay = new Date(debut);
+  const timestamp = dateToReduceOneDay.setDate(
+    dateToReduceOneDay.getDate() - 1,
+  );
+  return new Date(timestamp);
+};
+
+export const addOneMonth = (debut: Date) => {
+  const dateToAddOneMonth = new Date(debut);
+  const timestamp = dateToAddOneMonth.setMonth(
+    dateToAddOneMonth.getMonth() + 1,
+  );
+  return new Date(timestamp);
+};

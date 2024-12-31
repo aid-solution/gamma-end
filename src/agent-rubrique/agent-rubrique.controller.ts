@@ -11,16 +11,23 @@ import { AffectationService } from 'src/affectation/affectation.service';
 import { FonctionRubriqueService } from 'src/fonction-rubrique/fonction-rubrique.service';
 import { DirectionRubriqueService } from 'src/direction-rubrique/direction-rubrique.service';
 import { ServiceRubriqueService } from 'src/service-rubrique/service-rubrique.service';
-import { formatDate } from 'src/utilities/formatDate';
+import {
+  addOneMonth,
+  formatDate,
+  getLastDayOfMonth,
+  reduceOneDay,
+} from 'src/utilities/formatDate';
 import { AffectationRubriqueAgentDTO } from 'src/dto/affectationRubriqueAgent.dto';
 import { AgentRubrique } from 'src/schemas/users/agentRubrique.schema';
 import { AffectationRubriqueDTO } from 'src/dto/affectationRubrique.dto';
 import { UpdateAffectationRubriqueDTO } from 'src/dto/updateAffectationRubrique.dto';
 import { CreateAgentRubriqueDTO } from 'src/dto/createAgentRubrique.dto';
+import { SalaireService } from 'src/salaire/salaire.service';
 
 @Controller('agent-rubrique')
 export class AgentRubriqueController {
   constructor(
+    private readonly salaireService: SalaireService,
     private readonly agentRubriqueService: AgentRubriqueService,
     private readonly affectationService: AffectationService,
     private readonly fonctionRubriqueService: FonctionRubriqueService,
@@ -61,7 +68,7 @@ export class AgentRubriqueController {
     return result;
   }
 
-  private getAllRubriqueAgent(
+  private async getAllRubriqueAgent(
     oldRubrique: AgentRubrique[],
     rubrique: AffectationRubriqueDTO[],
   ) {
@@ -70,6 +77,14 @@ export class AgentRubriqueController {
     const filterAllInitialRibruques = oldRubrique.filter(
       (item) => ![100, 154, 201].includes(item.rubrique.code),
     );
+    const currentSalary = await this.salaireService.findLast();
+    const debut = currentSalary
+      ? currentSalary.isRemunerated
+        ? addOneMonth(
+            new Date(`${currentSalary.annee}-${currentSalary.mois}-01`),
+          )
+        : new Date(`${currentSalary.annee}-${currentSalary.mois}-01`)
+      : new Date();
     filterAllInitialRibruques.map((old: any) => {
       const filter = rubrique.filter(
         (rub: any) => rub._id === old.rubrique._id.toString(),
@@ -78,7 +93,9 @@ export class AgentRubriqueController {
       if (!filter.length || (filter[0] && filter[0].montant !== old.montant)) {
         const affectation = {
           _id: old._id,
-          dateFin: new Date(),
+          dateFin: currentSalary.isRemunerated
+            ? reduceOneDay(debut)
+            : getLastDayOfMonth(debut),
         } as unknown as UpdateAffectationRubriqueDTO;
         affectationRubriqueUpdate.push(affectation);
       } else if (
@@ -92,18 +109,27 @@ export class AgentRubriqueController {
     return { affectationRubriqueUpdate, idOfUsedRubrique };
   }
 
-  private affectationRubriqueAgent(
+  private async affectationRubriqueAgent(
     id: string,
     rubrique: AffectationRubriqueDTO[],
     idOfUsedRubrique: string[],
   ) {
     const affectationRubrique: CreateAgentRubriqueDTO[] = [];
+    const currentSalary = await this.salaireService.findLast();
+    const debut = currentSalary
+      ? currentSalary.isRemunerated
+        ? addOneMonth(
+            new Date(`${currentSalary.annee}-${currentSalary.mois}-01`),
+          )
+        : new Date(`${currentSalary.annee}-${currentSalary.mois}-01`)
+      : new Date();
     rubrique.map((rub) => {
       if (!idOfUsedRubrique.includes(rub._id)) {
         const affectation = {
           rubrique: rub._id,
           agent: id,
           montant: rub.montant,
+          dateDebut: debut,
         } as unknown as CreateAgentRubriqueDTO;
         affectationRubrique.push(affectation);
       }
@@ -160,8 +186,8 @@ export class AgentRubriqueController {
       const oneGoing =
         await this.agentRubriqueService.findAllByAgentAndRubriqueOnGoing(agent);
       const { affectationRubriqueUpdate: update, idOfUsedRubrique } =
-        this.getAllRubriqueAgent(oneGoing, rubrique);
-      const create = this.affectationRubriqueAgent(
+        await this.getAllRubriqueAgent(oneGoing, rubrique);
+      const create = await this.affectationRubriqueAgent(
         agent,
         rubrique,
         idOfUsedRubrique,

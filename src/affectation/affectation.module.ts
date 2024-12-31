@@ -7,6 +7,7 @@ import { ManagerDbService } from 'src/providers/managerDb.service';
 import { TenantCachingService } from 'src/providers/tenantCaching.service';
 import { AgentRubriqueService } from 'src/agent-rubrique/agent-rubrique.service';
 import { RubriqueService } from 'src/rubrique/rubrique.service';
+import { SalaireService } from 'src/salaire/salaire.service';
 
 @Module({
   controllers: [AffectationController],
@@ -18,6 +19,7 @@ import { RubriqueService } from 'src/rubrique/rubrique.service';
     TenantCachingService,
     AgentRubriqueService,
     RubriqueService,
+    SalaireService,
   ],
   exports: [AffectationService],
 })

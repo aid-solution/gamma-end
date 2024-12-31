@@ -39,5 +39,6 @@ import { RubriqueService } from 'src/rubrique/rubrique.service';
     TenantService,
     RubriqueService,
   ],
+  exports: [SalaireService],
 })
 export class SalaireModule {}

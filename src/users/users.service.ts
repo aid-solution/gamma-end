@@ -21,7 +21,7 @@ export class UsersService {
   private readonly tenantName = this.managerDbService.getTenantDbName(
     getTenantName(this.request),
   );
-  private userModel = this.useModel.connectModel<UserDocument>(
+  private readonly userModel = this.useModel.connectModel<UserDocument>(
     this.tenantName,
     'User',
     UserSchema,
@@ -100,8 +100,8 @@ export class UsersService {
   async update(
     id: string,
     updateUserDto: CreateUserDTO,
-  ): Promise<ProfilDocument> {
-    return await (await this.profilModel)
+  ): Promise<UserDocument> {
+    return await (await this.userModel)
       .findByIdAndUpdate(id, updateUserDto, { new: true })
       .exec();
   }

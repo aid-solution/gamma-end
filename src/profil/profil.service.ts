@@ -47,10 +47,10 @@ export class ProfilService {
 
   async update(
     id: string,
-    updateBanqueDto: CreateProfilDTO,
+    updateProfilDto: CreateProfilDTO,
   ): Promise<ProfilDocument> {
     return await (await this.profilModel)
-      .findByIdAndUpdate(id, updateBanqueDto, { new: true })
+      .findByIdAndUpdate(id, updateProfilDto, { new: true })
       .exec();
   }
 }

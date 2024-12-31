@@ -15,8 +15,9 @@ import { AgentRubriqueService } from 'src/agent-rubrique/agent-rubrique.service'
 import { UpdateAffectationRubriqueDTO } from 'src/dto/updateAffectationRubrique.dto';
 import { RubriqueService } from 'src/rubrique/rubrique.service';
 import { CreateAgentRubriqueDTO } from 'src/dto/createAgentRubrique.dto';
-import { formatDate } from 'src/utilities/formatDate';
+import { formatDate, getLastDayOfMonth } from 'src/utilities/formatDate';
 import { AffectationDocument } from 'src/schemas/users/affectation.schema';
+import { SalaireService } from 'src/salaire/salaire.service';
 
 @Controller('affectation')
 export class AffectationController {
@@ -24,6 +25,7 @@ export class AffectationController {
     private affectationService: AffectationService,
     private readonly agentRubriqueService: AgentRubriqueService,
     private readonly rubriqueService: RubriqueService,
+    private readonly salaireService: SalaireService,
   ) {}
 
   private listAffectations(affectations: AffectationDocument[]) {
@@ -53,45 +55,87 @@ export class AffectationController {
   @HttpCode(201)
   async create(@Body() affectationDto: UpdateAffectationDTO) {
     try {
+      const lastAffectation = await this.affectationService.latestByAgent(
+        affectationDto.agent,
+      );
       const salaireRubrique = await this.rubriqueService.findOneByCode(100);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { salaire, _id, dateFin, ...rest } = affectationDto;
-      const rubriqueAgentSalaire = {
+      const rubriqueSalaireAgent = {
         dateDebut: rest.dateDebut,
         agent: rest.agent,
         rubrique: salaireRubrique._id,
         montant: +salaire,
       } as unknown as CreateAgentRubriqueDTO;
-      const agentRubrique = await this.agentRubriqueService.create([
-        rubriqueAgentSalaire,
-      ]);
-      const AgentRubriques =
-        await this.agentRubriqueService.findAllByAgentAndRubriqueOnGoing(
-          rest.agent,
-        );
-      const agentRubriqueSalaire = AgentRubriques.filter(
-        (agentRubrique) => agentRubrique.rubrique.code === 100,
-      )[0];
-      const udpateRubrique = {
-        _id: agentRubriqueSalaire._id,
-        dateFin: new Date(),
-      } as unknown as UpdateAffectationRubriqueDTO;
-      await this.agentRubriqueService.update([udpateRubrique]);
+      if (lastAffectation.length) {
+        const lastSalary = await this.salaireService.findLast();
+        if (lastSalary) {
+          const salaireDebutMois = new Date(
+            Date.UTC(lastSalary.annee, lastSalary.mois - 1, 1, 0, 0, 0),
+          );
 
-      const latest = (
-        await this.affectationService.latestByAgent(rest.agent)
-      )[0];
-      const updateAffectation = {
-        dateFin: new Date(),
-        ...latest,
-      } as undefined as UpdateAffectationDTO;
-      await this.affectationService.update(updateAffectation);
+          if (lastAffectation[0].dateDebut <= salaireDebutMois) {
+            const rubrique = await this.agentRubriqueService.findOne(
+              lastAffectation[0].agentRubrique as unknown as string,
+            );
 
-      const datas = {
-        ...rest,
-        agentRubrique: agentRubrique[0]._id,
-      } as unknown as CreateAffectationDTO;
-      return await this.affectationService.create(datas);
+            if (lastSalary.isRemunerated) {
+              lastAffectation[0].dateFin = getLastDayOfMonth(salaireDebutMois);
+              rubrique.dateFin = getLastDayOfMonth(salaireDebutMois);
+              const dateToAddOneMonth = new Date(salaireDebutMois);
+              const timestamp = dateToAddOneMonth.setMonth(
+                dateToAddOneMonth.getMonth() + 1,
+              );
+              rubriqueSalaireAgent.dateDebut = new Date(
+                formatDate(new Date(timestamp), '/'),
+              );
+              rest.dateDebut = `${rubriqueSalaireAgent.dateDebut}`;
+            } else {
+              rubriqueSalaireAgent.dateDebut = salaireDebutMois;
+              const dateToReduceOneDay = new Date(salaireDebutMois);
+              const timestamp = dateToReduceOneDay.setDate(
+                dateToReduceOneDay.getDate() - 1,
+              );
+              lastAffectation[0].dateFin = new Date(timestamp);
+              rubrique.dateFin = new Date(timestamp);
+            }
+            await this.affectationService.update(
+              lastAffectation[0] as unknown as UpdateAffectationDTO,
+            );
+            const udpateRubrique = {
+              _id: rubrique._id,
+              dateFin: rubrique.dateFin,
+            } as unknown as UpdateAffectationRubriqueDTO;
+            await this.agentRubriqueService.update([udpateRubrique]);
+
+            const agentRubrique = await this.agentRubriqueService.create([
+              rubriqueSalaireAgent,
+            ]);
+
+            rest.dateDebut = `${rubriqueSalaireAgent.dateDebut}`;
+
+            const datas = {
+              ...rest,
+              agentRubrique: agentRubrique[0]._id,
+            } as unknown as CreateAffectationDTO;
+            return await this.affectationService.create(datas);
+          } else {
+            throw new InternalServerErrorException(
+              'an_error_in_prcedure_raised',
+            );
+          }
+        }
+      } else {
+        const agentRubrique = await this.agentRubriqueService.create([
+          rubriqueSalaireAgent,
+        ]);
+
+        const datas = {
+          ...rest,
+          agentRubrique: agentRubrique[0]._id,
+        } as unknown as CreateAffectationDTO;
+        return await this.affectationService.create(datas);
+      }
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException('an_unknow_exception_raised');

@@ -6,6 +6,8 @@ import { ConnectionResolver } from '../providers/connectionResolver.service';
 import { ManagerDbService } from 'src/providers/managerDb.service';
 import { TenantCachingService } from 'src/providers/tenantCaching.service';
 import { DirectionRubriqueService } from 'src/direction-rubrique/direction-rubrique.service';
+import { SalaireService } from 'src/salaire/salaire.service';
+import { AgentRubriqueService } from 'src/agent-rubrique/agent-rubrique.service';
 
 @Module({
   controllers: [DirectionController],
@@ -16,6 +18,8 @@ import { DirectionRubriqueService } from 'src/direction-rubrique/direction-rubri
     ManagerDbService,
     TenantCachingService,
     DirectionRubriqueService,
+    AgentRubriqueService,
+    SalaireService,
   ],
 })
 export class DirectionModule {}

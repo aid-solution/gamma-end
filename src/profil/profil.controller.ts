@@ -19,8 +19,7 @@ export class ProfilController {
   @Post()
   @HttpCode(201)
   async create(@Body() profilDto: ProfilDTO) {
-    delete profilDto._id;
-    const createProfilDto = profilDto as unknown as CreateProfilDTO;
+    const createProfilDto: Omit<CreateProfilDTO, '_id'> = profilDto;
     try {
       return await this.profilService.create(createProfilDto);
     } catch (error) {
