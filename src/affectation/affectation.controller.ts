@@ -79,7 +79,7 @@ export class AffectationController {
               lastAffectation[0].agentRubrique as unknown as string,
             );
 
-            if (lastSalary.isRemunerated) {
+            if (lastSalary.isClose) {
               lastAffectation[0].dateFin = getLastDayOfMonth(salaireDebutMois);
               rubrique.dateFin = getLastDayOfMonth(salaireDebutMois);
               const dateToAddOneMonth = new Date(salaireDebutMois);

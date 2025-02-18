@@ -105,7 +105,6 @@ export class SalaireController {
         debutMois,
         finMois,
       );
-
       const conges = await this.congeService.findByPeriod(debutMois, finMois);
 
       const findAllAffection = await this.affectationService.findByPeriod(

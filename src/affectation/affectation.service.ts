@@ -218,11 +218,11 @@ export class AffectationService {
               },
               {
                 dateDebut: { $lte: finMois, $gte: debutMois },
-                dateFin: { $exists: false },
+                $or: [{ dateFin: { $exists: false } }, { dateFin: null }],
               },
               {
                 dateDebut: { $lte: debutMois },
-                dateFin: { $exists: false },
+                $or: [{ dateFin: { $exists: false } }, { dateFin: null }],
               },
             ],
           },
@@ -239,6 +239,14 @@ export class AffectationService {
             path: 'direction',
             model: await this.directionModel,
           },
+        },
+      })
+      .populate({
+        path: 'fonction',
+        model: await this.fonctionModel,
+        populate: {
+          path: 'direction',
+          model: await this.directionModel,
         },
       })
       .populate({

@@ -117,11 +117,11 @@ export class DirectionRubriqueService {
           },
           {
             dateDebut: { $lte: finMois, $gte: debutMois },
-            dateFin: { $exists: false },
+            $or: [{ dateFin: { $exists: false } }, { dateFin: null }],
           },
           {
             dateDebut: { $lte: debutMois },
-            dateFin: { $exists: false },
+            $or: [{ dateFin: { $exists: false } }, { dateFin: null }],
           },
         ],
       })

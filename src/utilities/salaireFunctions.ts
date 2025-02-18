@@ -575,7 +575,6 @@ export const combineAllRubrique = (
       (account) =>
         account.agent.toString() === affectation.agent._id.toString(),
     );
-
     agentAllRubrique.push({
       _id: affectation.agent._id,
       matricule: affectation.agent.matricule,
@@ -660,7 +659,7 @@ const totalJoursAbsence = (
   let total = 0;
   for (const absence of absences) {
     const debut =
-      absence.dateDebut.getTime() < dateDebut.getTime()
+      absence.dateDebut.getTime() > dateDebut.getTime()
         ? absence.dateDebut
         : dateDebut;
     const fin =

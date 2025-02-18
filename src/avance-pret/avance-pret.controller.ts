@@ -22,7 +22,7 @@ export class AvancePretController {
   @Post()
   @HttpCode(201)
   @UsePipes(ConvertToOriginalTypePipe)
-  async createAbsence(@Body() avancePretDto: AvancePretDTO) {
+  async createAvancePret(@Body() avancePretDto: AvancePretDTO) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, ...rest } = avancePretDto;
     const createAvancePretDto = rest as unknown as CreateAvancePretDTO;
