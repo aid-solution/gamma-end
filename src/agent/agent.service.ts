@@ -217,6 +217,10 @@ export class AgentService {
               : chargeAgent.assujetiCNSS
                 ? 'Oui'
                 : 'Non',
+          dateDebut: formatDate(chargeAgent.dateDebut, '/'),
+          dateFin: chargeAgent.dateFin
+            ? formatDate(chargeAgent.dateFin, '/')
+            : '',
         };
         charges.push(charge);
       });

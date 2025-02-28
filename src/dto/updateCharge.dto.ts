@@ -48,4 +48,12 @@ export class UpdateChargeDTO {
   @IsString()
   @IsOptional()
   asujetiCNSS: string;
+
+  @IsString()
+  @IsOptional()
+  dateDebut: Date;
+
+  @IsString()
+  @IsOptional()
+  dateFin: Date;
 }

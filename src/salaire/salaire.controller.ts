@@ -143,7 +143,7 @@ export class SalaireController {
         finMois,
       );
 
-      const charges = await this.chargeService.findAll();
+      const charges = await this.chargeService.findByPeriod(debutMois, finMois);
       const agentAccount = await this.agentAccountService.findAll();
       return await this.salaireService.CalculSalaire(
         salary,
@@ -230,7 +230,10 @@ export class SalaireController {
         const directionRubriques =
           await this.directionRubriqueService.findByPeriod(debutMois, finMois);
 
-        const charges = await this.chargeService.findAll();
+        const charges = await this.chargeService.findByPeriod(
+          debutMois,
+          finMois,
+        );
         const agentAccount = await this.agentAccountService.findAll();
 
         const results = combineAllRubrique(

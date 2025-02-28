@@ -39,6 +39,43 @@ export class ChargeService {
       .sort({ _id: -1 })
       .exec();
   }
+  async findByPeriod(
+    debutMois: Date,
+    finMois: Date,
+  ): Promise<ChargeDocument[]> {
+    return await (
+      await this.chargeModel
+    )
+      .find({
+        $or: [
+          {
+            dateDebut: { $gte: debutMois },
+            dateFin: { $lte: finMois },
+          },
+          {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $gte: finMois },
+          },
+          {
+            dateDebut: { $lte: debutMois },
+            dateFin: { $gte: debutMois },
+          },
+          {
+            dateDebut: { $lte: finMois, $gte: debutMois },
+            dateFin: { $gte: debutMois },
+          },
+          {
+            dateDebut: { $lte: finMois, $gte: debutMois },
+            $or: [{ dateFin: { $exists: false } }, { dateFin: null }],
+          },
+          {
+            dateDebut: { $lte: debutMois },
+            $or: [{ dateFin: { $exists: false } }, { dateFin: null }],
+          },
+        ],
+      })
+      .exec();
+  }
 
   async findOne(id: string): Promise<ChargeDocument> {
     return await (await this.chargeModel).findById(id).exec();

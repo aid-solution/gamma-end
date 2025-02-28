@@ -35,6 +35,8 @@ import { SalaireModule } from './salaire/salaire.module';
 import { TenantAccountModule } from './tenant-account/tenant-account.module';
 import { MotifAbsenceModule } from './motif-absence/motif-absence.module';
 import { ProfilModule } from './profil/profil.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { AutoUpdateSalaireAfterNewOrUpdateItem } from './interceptors/autoUpdateSalaireAfterNewOrUpdateItem.interceptor';
 
 @Module({
   imports: [
@@ -76,6 +78,10 @@ import { ProfilModule } from './profil/profil.module';
     ConnectionResolver,
     ManagerDbService,
     TenantCachingService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AutoUpdateSalaireAfterNewOrUpdateItem,
+    },
   ],
 })
 export class AppModule implements NestModule {

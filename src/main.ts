@@ -2,6 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { AutoUpdateSalaireAfterNewOrUpdateItem } from './interceptors/autoUpdateSalaireAfterNewOrUpdateItem.interceptor';
+import { UseModel } from './providers/useModel.service';
+import { ManagerDbService } from './providers/managerDb.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -35,6 +38,11 @@ async function bootstrap() {
 
   app.enableCors(options);
   app.useGlobalPipes(new ValidationPipe());
+  const useModel = app.get(UseModel);
+  const managerDbService = app.get(ManagerDbService);
+  app.useGlobalInterceptors(
+    new AutoUpdateSalaireAfterNewOrUpdateItem(useModel, managerDbService),
+  );
   await app.listen(process.env.PORT || 3030);
 }
 

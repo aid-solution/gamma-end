@@ -146,11 +146,15 @@ export const combineAllRubriqueAgent = (
       congeItem.type = findConge.type;
     }
 
+    const absenceDeductible = filterAbsence.filter(
+      (absence) => absence.deduction === true,
+    );
+
     const nombreJoursAbsence =
       congeItem.jours +
-      (filterAbsence.length === 0
+      (absenceDeductible.length === 0
         ? 0
-        : totalJoursAbsence(filterAbsence, debutMois, finMois));
+        : totalJoursAbsence(absenceDeductible, debutMois, finMois));
     const gains: Rubrique[] = [];
     const retenues: Rubrique[] = [];
 

@@ -34,4 +34,12 @@ export class ChargeDTO {
   @IsString()
   @IsOptional()
   assujetiCNSS: string;
+
+  @IsString()
+  @IsOptional()
+  dateDebut: Date;
+
+  @IsString()
+  @IsOptional()
+  dateFin: Date;
 }

@@ -46,4 +46,12 @@ export class CreateChargeDTO {
   @IsBoolean()
   @IsOptional()
   assujetiCNSS: boolean;
+
+  @IsString()
+  @IsOptional()
+  dateDebut: Date;
+
+  @IsString()
+  @IsOptional()
+  dateFin: Date;
 }

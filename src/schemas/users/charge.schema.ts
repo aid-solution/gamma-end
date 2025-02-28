@@ -58,6 +58,16 @@ export class Charge {
     ref: 'Agent',
   })
   agent: Agent;
+
+  @Prop({
+    default: new Date(),
+  })
+  dateDebut: Date;
+
+  @Prop({
+    required: false,
+  })
+  dateFin: Date;
 }
 
 export const ChargeSchema = SchemaFactory.createForClass(Charge);
